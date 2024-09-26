@@ -1,9 +1,9 @@
 # The Microlenser's Guide to the Galaxy
-
 Welcome, intrepid explorers of the cosmic tapestry! You are about to embark on a delightful journey through the realm of microlensing. This guide has been meticulously crafted to furnish the eager minds of budding scientists with the skills necessary to navigate the wonders of the Roman microlensing project.
 
-## Table of Contents
+## Overview
 
+## Table of Contents
 - [Introduction](#introduction)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -12,32 +12,47 @@ Welcome, intrepid explorers of the cosmic tapestry! You are about to embark on a
 - [Contact](#contact)
 
 ## Introduction
+Picture this: a galaxy brimming with mysteries and hoards of juicy Roman data waiting to unravel them. But this picture is missing something: a doe-eyed microlenser, whose fortitude and cleverness are up to the task of its unraveling—someone like you.
 
-Picture this: a galaxy brimming with mysteries and hoards of juicey Roman data waiting to unravel them. But this picture is missing something; a doe-eyed microlenser, whos fortitude and cleverness are up to the task of its unravelling - some one like you. 
+The goal of this project is to create an all-encompassing collection of Jupyter notebooks—your trusty companions for engaging exercises related to microlensing. Through these notebooks, the insights and experiences of microlensing elders can light your path as you embark on your journey of discovery and exploration through scientific research.
 
-The goal of this project is to create an all-encompassing collection of Jupyter notebooks—your trusty companions for engaging exercises related to microlensing. Through these notebooks the insights and experiences of microlensing elders can light you path as you embark on your journey of discovery and exploration through scientific research.
-
-This guide follows a choose-you-own-adventure style. You control for yourself the specialoisations and knowledge you wish to become equip with. That way, weather you are the min-maxing kind or you are more the type to vibe it out, this courcse if designed specifically for you.
+This guide follows a choose-your-own-adventure style. You control the specializations and knowledge you wish to become equipped with. That way, whether you are the min-maxing kind or more the type to vibe it out, this course is designed specifically for you.
 
 These resources are made to be as freely available as HST time is not, beckoning anyone with a curious spirit to delve into the fascinating world of microlensing and contribute to its exciting development.
 
 ## Installation
-
 To embark on your microlensing adventure, simply follow these straightforward steps:
 
 1. Clone the repository:  
-   `git clone https://github.com/AmberLee2427/TheGuide.git`
-2. [Optional] create a dedicated environments:
-    `pip install virtualenv`
-    `virtualenv *environment-name*`
-    `source myenv/bin/activate`, for pip users on macOS or Linux,
+   ```bash
+   git clone https://github.com/AmberLee2427/TheGuide.git
+   ```
+1. (Optional) create a dedicated environments:
+    ```bash
+    pip install virtualenv
+    virtualenv *environment-name*
+    source myenv/bin/activate
+    ```
+    for pip users on macOS or Linux,
+
     or
-    `conda create -y -n *envirinment-name* python=3.8`
-    `conda activate *environment-name*`, for anaconda users.
-3. Install the required dependencies:  
-    `pip install -r requirements.txt`, for pip users,
-   or 
-    `conda install --file requirements.txt` for anaconda users
+
+    ```bash
+    conda create -y -n *envirinment-name* python=3.8
+    conda activate *environment-name*
+    ```
+    for anaconda users.
+1. Install the required dependencies:  
+    ```bash
+    pip install -r requirements.txt
+    for pip users,
+
+    or 
+
+    ```bash
+    conda install --file requirements.txt
+    ```
+    for anaconda users.
 
 And voilà! You’re ready to launch into the universe of data and discovery.
 
