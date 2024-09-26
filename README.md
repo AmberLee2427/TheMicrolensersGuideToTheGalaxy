@@ -26,24 +26,26 @@ To embark on your microlensing adventure, simply follow these straightforward st
 
 1. Clone the repository:  
    ```bash
-   git clone https://github.com/AmberLee2427/TheGuide.git
+   git clone https://github.com/AmberLee2427/TheMicrolensersGuideToTheGalaxy.git
    ```
-1. (Optional) create a dedicated environments:
+1. Create a dedicated environments with the required dependencies:
     ```bash
     pip install virtualenv
     virtualenv *environment-name*
     source *environment-name*/bin/activate
+    pip install -r requirements.txt
     ```
     for pip users on macOS or Linux,
 
     or
 
     ```bash
-    conda create -y -n *envirinment-name* python=3.8
-    conda activate *environment-name*
+    conda create -f envirinment.yml
+    conda activate TheGuide
     ```
-    for anaconda users.
-1. Install the required dependencies:  
+    for Anaconda users.
+    
+    Alternatively, without using environments (not recommended), you can install the required dependencies as follows:  
     ```bash
     pip install -r requirements.txt
     ```
@@ -54,7 +56,7 @@ To embark on your microlensing adventure, simply follow these straightforward st
     ```bash
     conda install --file requirements.txt
     ```
-    for anaconda users.
+    for Anaconda users.
 
 And voilà! You’re ready to launch into the universe of data and discovery.
 
@@ -64,7 +66,7 @@ Some of the more specialised notebooks in this guide have further install requir
 
 ## Usage
 
-Open the Jupyter notebooks nestled within the `Notebooks` directory, where each document brims with exercises and illuminating examples. Follow the instructions inside you [`Introduction.ipynb`](Introduction.ipynb) notebook and prepare to explore the captivating concepts of microlensing with all the enthusiasm of a seasoned hitchhiker. 
+Open the Jupyter notebooks nestled within the `Notebooks` directory, where each document brims with exercises and illuminating examples. Follow the instructions inside your [`Introduction.ipynb`](https://github.com/AmberLee2427/TheMicrolensersGuideToTheGalaxy/blob/main/Notebooks/Introduction.ipynb) notebook and prepare to explore the captivating concepts of microlensing with all the enthusiasm of a seasoned hitchhiker. 
 
 These notebooks include data analysis exercises without extensive help text. It is therefore recommended that you run these notebooks inside an IDE, e.g. VSCode, with an integrated AI, e.g. GitHub Copilot, for a seemless and efficient experience. 
 
