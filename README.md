@@ -32,7 +32,7 @@ To embark on your microlensing adventure, simply follow these straightforward st
     ```bash
     pip install virtualenv
     virtualenv *environment-name*
-    source myenv/bin/activate
+    source *environment-name*/bin/activate
     ```
     for pip users on macOS or Linux,
 
@@ -46,6 +46,7 @@ To embark on your microlensing adventure, simply follow these straightforward st
 1. Install the required dependencies:  
     ```bash
     pip install -r requirements.txt
+    ```
     for pip users,
 
     or 
@@ -63,7 +64,7 @@ Some of the more specialised notebooks in this guide have further install requir
 
 ## Usage
 
-Open the Jupyter notebooks nestled within the `notebooks` directory, where each document brims with exercises and illuminating examples. Follow the instructions inside you `Introduction` notebook and prepare to explore the captivating concepts of microlensing with all the enthusiasm of a seasoned hitchhiker. 
+Open the Jupyter notebooks nestled within the `Notebooks` directory, where each document brims with exercises and illuminating examples. Follow the instructions inside you [`Introduction.ipynb`](Introduction.ipynb) notebook and prepare to explore the captivating concepts of microlensing with all the enthusiasm of a seasoned hitchhiker. 
 
 These notebooks include data analysis exercises without extensive help text. It is therefore recommended that you run these notebooks inside an IDE, e.g. VSCode, with an integrated AI, e.g. GitHub Copilot, for a seemless and efficient experience. 
 
