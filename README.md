@@ -68,8 +68,6 @@ Some of the more specialised notebooks in this guide have further install requir
 
 Open the Jupyter notebooks nestled within the `Notebooks` directory, where each document brims with exercises and illuminating examples. Follow the instructions inside your [`Introduction.ipynb`](https://github.com/AmberLee2427/TheMicrolensersGuideToTheGalaxy/blob/main/Notebooks/Introduction.ipynb) notebook and prepare to explore the captivating concepts of microlensing with all the enthusiasm of a seasoned hitchhiker. 
 
-These notebooks include data analysis exercises without extensive help text. It is therefore recommended that you run these notebooks inside an IDE, e.g. VSCode, with an integrated AI, e.g. GitHub Copilot, for a seemless and efficient experience. 
-
 ## Contributing
 
 Your contributions are the hydrogen that makes this project shine brighter! If you wish to become an Elder and enhance these resources—whether through bug fixes, clever improvements, or new exercises—please don’t hesitate to contact the project author at malpas.1@osu.edu. Every bit of input is apprecieted.
@@ -93,5 +91,5 @@ Should questions or inquiries cross your mind or terminal, feel free to reach ou
 - **Email:** malpas.1@osu.edu
 - **GitHub:** [AmberLee2427](https://github.com/AmberLee2427)
 
-So strap in, grab your towel, and prepare for an enlightening expedition into the universe of microlensing!
+So raise you thumb, grab your towel, and prepare for an enlightening expedition into the universe of microlensing!
 
