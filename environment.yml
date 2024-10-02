@@ -7,6 +7,8 @@ dependencies:
   - appnope=0.1.4=pyhd8ed1ab_0
   - argon2-cffi=21.3.0=pyhd3eb1b0_0
   - argon2-cffi-bindings=21.2.0=py38h1a28f6b_0
+  - astropy=5.1=py38heec5a64_0
+  - astroquery=0.4.7=pyhd8ed1ab_0
   - asttokens=2.4.1=pyhd8ed1ab_0
   - async-lru=2.0.4=py38hca03da5_0
   - attrs=23.1.0=py38hca03da5_0
@@ -34,16 +36,19 @@ dependencies:
   - fonttools=4.51.0=py38h80987f9_0
   - freetype=2.12.1=h1192e45_0
   - h11=0.14.0=py38hca03da5_0
+  - html5lib=1.1=pyhd3eb1b0_0
   - httpcore=1.0.2=py38hca03da5_0
   - httpx=0.27.0=py38hca03da5_0
   - idna=3.7=py38hca03da5_0
   - importlib-metadata=8.5.0=pyha770c72_0
+  - importlib_metadata=8.5.0=hd8ed1ab_0
   - importlib_resources=6.4.0=py38hca03da5_0
   - ipykernel=6.29.5=pyh57ce528_0
   - ipympl=0.9.3=py38hca03da5_0
   - ipython=8.12.2=pyhd1c38e8_0
   - ipython_genutils=0.2.0=pyhd3eb1b0_1
   - ipywidgets=8.1.2=py38hca03da5_0
+  - jaraco.classes=3.2.1=pyhd3eb1b0_0
   - jedi=0.19.1=pyhd8ed1ab_0
   - jinja2=3.1.4=py38hca03da5_0
   - jpeg=9e=h80987f9_3
@@ -60,6 +65,7 @@ dependencies:
   - jupyterlab_pygments=0.1.2=py_0
   - jupyterlab_server=2.27.3=py38hca03da5_0
   - jupyterlab_widgets=3.0.10=py38hca03da5_0
+  - keyring=24.3.1=py38hca03da5_0
   - kiwisolver=1.4.4=py38h313beb8_0
   - lcms2=2.12=hba8e193_0
   - lerc=3.0=hc377ac9_0
@@ -83,6 +89,7 @@ dependencies:
   - matplotlib-base=3.7.2=py38h46d7db6_0
   - matplotlib-inline=0.1.7=pyhd8ed1ab_0
   - mistune=2.0.4=py38hca03da5_0
+  - more-itertools=10.3.0=py38hca03da5_0
   - nbclient=0.8.0=py38hca03da5_0
   - nbconvert=7.10.0=py38hca03da5_0
   - nbformat=5.9.2=py38hca03da5_0
@@ -113,6 +120,7 @@ dependencies:
   - ptyprocess=0.7.0=pyhd3deb0d_0
   - pure_eval=0.2.3=pyhd8ed1ab_0
   - pycparser=2.21=pyhd3eb1b0_0
+  - pyerfa=2.0.0=py38h1a28f6b_0
   - pygments=2.18.0=pyhd8ed1ab_0
   - pyparsing=3.0.9=py38hca03da5_0
   - pysocks=1.7.1=py38hca03da5_0
@@ -123,6 +131,7 @@ dependencies:
   - python-tzdata=2023.3=pyhd3eb1b0_0
   - python_abi=3.8=2_cp38
   - pytz=2024.1=py38hca03da5_0
+  - pyvo=1.5.2=pyhd8ed1ab_0
   - pyyaml=6.0.1=py38h80987f9_0
   - pyzmq=25.1.2=py38h313beb8_0
   - readline=8.2=h1a28f6b_0
