@@ -40,7 +40,7 @@ To embark on your microlensing adventure, simply follow these straightforward st
     or
 
     ```bash
-    conda create -f envirinment.yml
+    conda env create --name TheGuide --file=environments.yml
     conda activate TheGuide
     ```
     for Anaconda users.
