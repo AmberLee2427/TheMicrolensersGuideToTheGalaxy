@@ -40,10 +40,10 @@ To embark on your microlensing adventure, simply follow these straightforward st
     or
 
     ```bash
-    conda env create --name TheGuide --file=environment_osx.yml
+    conda env create --file=environment.yml
     conda activate TheGuide
     ```
-    for Anaconda users.
+    for Anaconda users. You can use the yaml specific to your operating system for a more stable notebook experience.
     
     Alternatively, without using environments (not recommended), you can install the required dependencies as follows:  
     ```bash
@@ -56,7 +56,7 @@ To embark on your microlensing adventure, simply follow these straightforward st
     ```bash
     conda install --file requirements.txt
     ```
-    for Anaconda users.
+    for Anaconda users. Installs using the requirements file are untested
 
 And voilà! You’re ready to launch into the universe of data and discovery.
 

@@ -1,0 +1,20 @@
+name: TheGuide
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8
+  - numpy
+  - astropy
+  - matplotlib
+  - scipy
+  - pandas
+  - astroquery
+  - jupyter
+  - ipython
+  - jupyterlab
+  - ipywidgets
+  - ipympl
+  - ipykernel
+  - emcee
+prefix: /opt/anaconda3/envs/TheGuide
