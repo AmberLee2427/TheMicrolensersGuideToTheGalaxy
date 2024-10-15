@@ -30,8 +30,8 @@ To embark on your microlensing adventure, simply follow these straightforward st
    ```
 1. Create a dedicated environments with the required dependencies:
     ```bash
-    pip install virtualenv
-    virtualenv *environment-name*
+    sudo apt-get install python3-venv
+    python3 -m venv .*environment-name*
     source *environment-name*/bin/activate
     pip install -r requirements.txt
     ```

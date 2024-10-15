@@ -17,4 +17,6 @@ dependencies:
   - ipympl
   - ipykernel
   - emcee
+  - ipydatagrid
+  - seaborn
 prefix: /opt/anaconda3/envs/TheGuide
