@@ -1,0 +1,103 @@
+# Finite source
+rho = 0.1  # source radius in units of theta_E
+rho_index = int(1000/4) # for adjusting the location of the source markers in the trajectory plot
+
+# Seting up a MulensModel object
+fspl = MulensModel.Model({'t_0': 0, 'u_0': 1, 't_E': 1, 'rho': rho})  # the parameters here don't matter - we will 
+                                                                      # change them later
+
+# Setting the limbdarkened-source magnification method, based on the source size
+if rho <= 0.1:
+    fspl.set_default_magnification_method('finite_source_LD_Yoo04')
+elif rho >= 2.0:
+    fspl.set_default_magnification_method('finite_source_LD_Lee09')
+else:
+    fspl.set_default_magnification_method('finite_source_LD_WittMoa94')
+
+tE = 1.0  # t is in units of tE instead of days
+# Theta (parameter list: [t0, u0, tE, rho])
+parameters_to_fit = ["t_0", "u_0", "t_E", "rho"]
+
+# Plot bounds
+xlims = (-2.0,2.0)
+ylims = (-2.0,2.0)
+
+t_len = 0.5 # length of the trajectory direction arrow
+alpha = 0.0  # trajectory direction
+
+trajectories = [
+    {'color': 'purple', 'u0': 0.25},
+    {'color': 'violet', 'u0': 0.5},
+    {'color': 'plum', 'u0': 0.75},
+    {'color': 'thistle', 'u0': 1.0}
+]
+
+trajectories_df = pd.DataFrame(trajectories)
+
+# Plotting
+plt.close(11)
+fig, ax = plt.subplots(1, 2, figsize=(8, 4), num=11)
+
+# Trajectories
+for i in trajectories_df.index:
+    trajectory = dict(trajectories_df.loc[i])
+    u1, u2 = get_trajectory(trajectory['u0'], alpha, xlims, ylims)
+    t= get_t(u1, u2, alpha) 
+    t0 = get_t0(u1, u2, t)
+    tt = t-t0
+    Theta = [t0, trajectory['u0'], tE, rho]
+
+    # Plot components
+    ax[0].plot(u1, u2, marker='', ls='-', c=trajectory['color'])  # trajectories
+    ax[0].plot(u1[rho_index], u2[rho_index], marker='o', markerfacecolor='white'\
+            , markeredgecolor=trajectory['color'], ms=rho*40)  # source sizes
+    
+    # Trajectory direction arrows
+    ax[0].arrow(u1[rho_index], u2[rho_index], t_len*np.cos(alpha), t_len*np.sin(alpha)\
+            , head_width=0.15, head_length=0.15, length_includes_head=True, width=0.02\
+            , color=trajectory['color'])
+    
+    # Updatting the mulens model object with the new parameters
+    for i, parameter in enumerate(parameters_to_fit):
+        setattr(fspl.parameters, parameter, Theta[i])
+    
+    # Magnification curve array
+    ######################
+    A = fspl.get_magnification(t)
+    ######################
+
+    # Plot lightcurves (technically, manification curves)
+    ######################
+    ax[1].plot(tt, np.log10(A), marker='', ls='-', c=trajectory['color'], 
+               label=r'$u_0=%1.2f$' %trajectory['u0'])
+    ######################
+
+# Aesthetics
+ax[0].grid(True)
+ax[0].set_aspect('equal')  # Equal in x and y
+#ax[1].set_aspect(6.7)  # manually forcing the magnification curve to be the same 
+                        # size as the caustic diagram
+
+ax[0].set_ylabel(r'$u_{2}$')  # axis labels
+ax[0].set_xlabel(r'$u_{1}$')
+ax[1].set_ylabel(r'$\log_{10}A$')
+ax[1].set_xlabel(r'$\tau$')
+ax[1].yaxis.set_label_position("right")
+ax[1].yaxis.tick_right()
+
+ax[1].legend()  # u0=...
+
+phi = np.linspace(-np.pi,np.pi,200)
+r = 1  # theta_E
+# r^2 = x^2 + y^2
+x = r * np.cos(phi)
+y = r * np.sin(phi)
+ax[0].plot(x, y, 'k--', alpha=0.3)  # thetaE circle
+ax[0].plot(0, 0, marker='o', c='red', ms=np.log10(5000.0))  # lens object
+
+ax[0].set_xlim(xlims[0],xlims[1])  # set plot bounds
+ax[0].set_ylim(ylims[0],ylims[1])
+ax[1].set_xlim(xlims[0],xlims[1])
+
+# Save
+plt.savefig('single_trajectories_FS.png', bbox_inches='tight')  # 'tight' removes outer padding
