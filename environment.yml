@@ -19,4 +19,5 @@ dependencies:
   - emcee
   - ipydatagrid
   - seaborn
+  - corner
 prefix: /opt/anaconda3/envs/TheGuide

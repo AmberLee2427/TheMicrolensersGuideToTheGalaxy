@@ -11,3 +11,5 @@ ipympl
 ipython
 jupyterlab
 jupyterlab-widgets
+emcee
+corner
