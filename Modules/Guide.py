@@ -1,4 +1,6 @@
 import os
+import sys
+sys.path.append(os.path.abspath('../'))
 
 def define(file_name):
     folder_path = "GuideEntries/"
