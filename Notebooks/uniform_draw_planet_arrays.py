@@ -17,28 +17,25 @@ mE = 3.00348959632e-6  # samples are drawn in solar masses and saved in earth ma
 # Required arguments
 script_name = sys.argv[0].split('/')[-1]
 try:
-    rundes = script_name.split('.')[0]
-    nl = int(sys.argv[1])
-    nf = int(sys.argv[2])
+    nl = int(sys.argv[1])  # length of a gulls sub run
+    nf = int(sys.argv[2])  # number of gulls subruns
+    rundes = sys.argv[3]
 except IndexError:
     print(f"Usage: python {script_name} nl nf file_ext")
     sys.exit(1)
 
 # Optional arguments
 try:
-    file_ext = sys.argv[3]
+    file_ext = sys.argv[4]
 except IndexError:
-    file_ext = "list"
+    file_ext = ""
 
 # Environment variables
-'''
-try:
-    data_dir = os.environ['GULLS_BASE_DIR']
-    print('GULLS_BASE_DIR: ', data_dir)
-except KeyError:
-    print('GULLS_BASE_DIR not set')
-    sys.exit(1)'''
-data_dir = './'
+#fs/proj/gulls/data/planets/test_run_name/test_run_name.planets.001.0001 (field.subrun)
+#readPlanet.cpp <- new gulls, check what header it is looking for
+#                  also check what filename it is looking for
+
+data_dir = '/fs/project/gaudi.1/gulls/data'
 if data_dir[-1] != '/':
     data_dir += '/'
 
@@ -91,7 +88,7 @@ def worker(i):
         if file_ext == "npy":
             np.save(pfile, combined_array)
         else:
-            np.savetxt(pfile, combined_array, delimiter=',', header='mass,a,inc,p')
+            np.savetxt(pfile, combined_array, delimiter=' ', header='mass a inc p', format='%.8f')
 
 def main():
     dir_name = f"{data_dir}/planets/{rundes}"
