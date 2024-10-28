@@ -72,12 +72,12 @@ Open the Jupyter notebooks nestled within the `Notebooks` directory, where each 
 
 Your contributions are the hydrogen that makes this project shine brighter! If you wish to become an Elder and enhance these resources—whether through bug fixes, clever improvements, or new exercises—please don’t hesitate to contact the project author at malpas.1@osu.edu. Every bit of input is apprecieted.
 
-### Elder Council
+### Elder Council (Authors)
 - Amber Malpas
 - Alison Crisp
 - Samson Johnson
-- B. Scott Gaudi
-- Michael Albrow
+- B. Scott Gaudi (TBD)
+- Michael Albrow (TBD)
 
 ## License
 
