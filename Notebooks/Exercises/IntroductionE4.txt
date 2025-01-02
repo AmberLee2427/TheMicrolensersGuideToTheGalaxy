@@ -1,0 +1,109 @@
+import matplotlib.image as mpimg
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+
+# Plotting
+plt.close(4)
+plt.figure(num=4, figsize=(7, 5))
+
+# Define colors for different discovery methods
+colors = {
+    'Transit': 'blue',
+    'Radial Velocity': 'red',
+    'Imaging': 'purple',
+    'Microlensing': 'orange'
+}
+
+# Plot each discovery method with different colors
+for method, color in colors.items():
+    subset = exoplanet_df_clean[exoplanet_df_clean['discoverymethod'] == method]
+    if method == 'Microlensing':
+        a = 1.0
+    else:
+        a = 0.25
+    plt.scatter(subset['pl_orbsmax'], subset['pl_bmasse'], c=color, label=method, alpha=a, s=15)
+
+# Planet images
+Mercury_png = './Assets/Planets/Mercury.png'
+Venus_png = './Assets/Planets/Venus.png'
+Earth_png = './Assets/Planets/Earth.png'
+Mars_png = './Assets/Planets/Mars.png'
+Jupiter_png = './Assets/Planets/Jupiter.png'
+Saturn_png = './Assets/Planets/Saturn.png'
+Uranus_png = './Assets/Planets/Uranus.png'
+Neptune_png = './Assets/Planets/Neptune.png'
+
+# Log scale for both axes
+plt.xscale('log')
+plt.yscale('log')
+
+# Plot a horizontal line at 13 Jupiter masses (13 * 317.8 Earth masses)
+BD = 13 * 317.8  # BD = 13 Jupiter masses in Earth masses
+plt.axhline(y=BD, color='black', linestyle='--', linewidth=1, alpha=0.25)
+BD = 90 * 317.8  # BD = 13 Jupiter masses in Earth masses
+plt.axhline(y=BD, color='black', linestyle='--', linewidth=1, alpha=0.25)
+
+# Labels and title
+plt.xlabel(r'Semimajor Axis (AU)')
+plt.ylabel(r'Mass ($M_\oplus$)')
+plt.legend(loc='lower right')
+
+######################
+# Planet table values
+Mercury_loc = (0.387, 0.055)
+Venus_loc = (0.723, 0.815)
+Earth_loc = (1.0, 1.0)
+Mars_loc = (1.52, 0.107)
+Jupiter_loc = (5.20, 317.8)
+Saturn_loc = (9.58, 95.2)
+Uranus_loc = (19.22, 14.5)
+Neptune_loc = (30.05, 17.1)
+
+# Add planet images
+ax = plt.gca()
+
+# Load the image
+Mercury_img = mpimg.imread(Mercury_png)
+Venus_img = mpimg.imread(Venus_png)
+Earth_img = mpimg.imread(Earth_png)
+Mars_img = mpimg.imread(Mars_png)
+Jupiter_img = mpimg.imread(Jupiter_png)
+Saturn_img = mpimg.imread(Saturn_png)
+Uranus_img = mpimg.imread(Uranus_png)
+Neptune_img = mpimg.imread(Neptune_png)
+
+# Create an OffsetImage object
+Mercury_imagebox = OffsetImage(Mercury_img, zoom=0.015)
+Venus_imagebox = OffsetImage(Venus_img, zoom=0.009)
+Earth_imagebox = OffsetImage(Earth_img, zoom=0.025)
+Mars_imagebox = OffsetImage(Mars_img, zoom=0.015)
+Jupiter_imagebox = OffsetImage(Jupiter_img, zoom=0.03)
+Saturn_imagebox = OffsetImage(Saturn_img, zoom=0.02)
+Uranus_imagebox = OffsetImage(Uranus_img, zoom=0.04)
+Neptune_imagebox = OffsetImage(Neptune_img, zoom=0.04)
+
+# Create an AnnotationBbox object
+Mercury = AnnotationBbox(Mercury_imagebox, Mercury_loc, frameon=False)
+Venus = AnnotationBbox(Venus_imagebox, Venus_loc, frameon=False)
+Earth = AnnotationBbox(Earth_imagebox, Earth_loc, frameon=False)
+Mars = AnnotationBbox(Mars_imagebox, Mars_loc, frameon=False)
+Jupiter = AnnotationBbox(Jupiter_imagebox, Jupiter_loc, frameon=False)
+Saturn = AnnotationBbox(Saturn_imagebox, Saturn_loc, frameon=False)
+Uranus = AnnotationBbox(Uranus_imagebox, Uranus_loc, frameon=False)
+Neptune = AnnotationBbox(Neptune_imagebox, Neptune_loc, frameon=False)
+
+# Add the AnnotationBbox to the axes
+ax.add_artist(Mercury)
+ax.add_artist(Venus)
+ax.add_artist(Earth)
+ax.add_artist(Mars)
+ax.add_artist(Jupiter)
+ax.add_artist(Saturn)
+ax.add_artist(Uranus)
+ax.add_artist(Neptune)
+print(np.log10(Mercury_loc), np.log10(Venus_loc), np.log10(Earth_loc), np.log10(Mars_loc), np.log10(Jupiter_loc), np.log10(Saturn_loc), np.log10(Uranus_loc), np.log10(Neptune_loc))
+######################
+
+# Show plot
+plt.show()
+
+plt.savefig('exoplanet_plot.png', dpi=300)

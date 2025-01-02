@@ -1,0 +1,48 @@
+colours = ['red', 'green', 'blue', 'orange']
+
+M = 1.0  # M_sun
+Dl = 1.0  # kpc
+Ds = np.linspace(Dl, 10, 100)  # kpc
+Ds = Ds[1:]  # Remove Ds = Dl
+
+theta_E_values = np.array([theta_E(M, Dl, D) for D in Ds])
+
+plt.close(3)  # Close the previous figure, if it exists
+plt.figure(num=3, figsize=(8, 5))  # Create a new figure
+plt.plot(Ds, theta_E_values, color=colours[0], label=r'$M_L=1.000M_\odot$, $D_L=1$ kpc')
+
+######################
+MM = [0.1, 0.01, 0.001] # ~M_star cutoff, ~M_BD cutoff, ~M_J
+
+for i, M in enumerate(MM):
+    theta_E_values = np.array([theta_E(M, Dl, D) for D in Ds])
+    plt.plot(Ds, theta_E_values, color=colours[i+1], label=r'$M_L=%3.3fM_\odot$, $D_L=1$ kpc' %M)
+
+MM = [1.0] + MM # add M_sun to the start of the loop
+
+Dl = 4.0  # kpc
+Ds = np.linspace(Dl, 10, 100)  # kpc
+Ds = Ds[1:]  # Remove Ds = Dl
+
+for i, M in enumerate(MM):
+    theta_E_values = np.array([theta_E(M, Dl, D) for D in Ds])
+    plt.plot(Ds, theta_E_values, color=colours[i], linestyle='--', label=r'$M_L=%3.3fM_\odot$, $D_L=4$ kpc' %M)
+
+Dl = 7.0  # kpc
+Ds = np.linspace(Dl, 10, 100)  # kpc
+Ds = Ds[1:]  # Remove Ds = Dl
+
+for i, M in enumerate(MM):
+    theta_E_values = np.array([theta_E(M, Dl, D) for D in Ds])
+    plt.plot(Ds, theta_E_values, color=colours[i], linestyle=':', label=r'$M_L=%3.3fM_\odot$, $D_L=7$ kpc' %M)
+
+plt.yscale('log')
+ax = plt.gca()
+ylim = ax.get_ylim()
+ax.set_ylim(ylim[0]/10, ylim[1])
+######################
+
+plt.xlabel(r'Source Distance, $D_{\rm{S}}$ (kpc)')
+plt.ylabel(r'Angular Einstein Radius, $\theta_{\rm{E}}$ (mas)')
+plt.legend(loc='lower left', ncol=3, fontsize='small')
+plt.show()
