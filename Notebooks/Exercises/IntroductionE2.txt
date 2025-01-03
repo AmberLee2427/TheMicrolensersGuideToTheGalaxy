@@ -7,8 +7,8 @@ Ds = Ds[1:]  # Remove Ds = Dl
 
 theta_E_values = np.array([theta_E(M, Dl, D) for D in Ds])
 
-plt.close(3)  # Close the previous figure, if it exists
-plt.figure(num=3, figsize=(8, 5))  # Create a new figure
+plt.close(2)  # Close the previous figure, if it exists
+plt.figure(num=2, figsize=(8, 5))  # Create a new figure
 plt.plot(Ds, theta_E_values, color=colours[0], label=r'$M_L=1.000M_\odot$, $D_L=1$ kpc')
 
 ######################

@@ -1,0 +1,106 @@
+def MfromthetaE(theta_E,DL,DS=8):
+    ''' Calculate the lens mass, M.
+    
+    Inputs:
+    --------
+    theta_E:            arr or flaot
+                        micro arc seconds
+    DL:                 arr or float
+                        kpc
+    DS (optional):      arr or float
+                        default is 8 - galactic center
+                        kpc    
+
+    Output:
+    --------
+    M:          arr of float (like theta_E)
+                in Jupiter masses
+                
+    Notes:
+    -------
+    $M = \frac{\theta_E^2}{\kappa\pi_{rel}}$,
+    where
+    $\kappa=8.144\,\rm{mas}/M_\odot$.
+    
+    $M_\odot = 1047.57 M_J$  - according to Google
+    
+    $\pi_{rel} = \rm{au}(\frac{1}{D_L}-\frac{1}{D_S})$,
+    the au just means we are working in parsecs distances and as for our angles because, 
+    by definition, 1 parsec is the disance to something with a parallax angle of 1 as. 
+
+    $d = \frac{1}{p}$, 
+    where $d$ is the distance to the star in parsecs (1 pc = 3.26 light-years) 
+    and $p$ is the parallax angle in arc seconds.
+    '''
+
+    # Constants
+    kappa = 8.144  # mas/MS
+    MS_MJ = 1047.57 # mass of the sun in jupiter masses (MJ)
+    kappa_muMJ = kappa*1000/MS_MJ  # muas/MJ
+    #au = 0.000484814  #kpc
+    #rad_deg = 1.0*180.0/np.pi  # 1 radian in degrees
+    #deg_as = 1.0*60.0*60.0  # 1 deg in mas
+    as_muas = 1.0*1000000.0  # 1 as in muas
+    #rad_muas = rad_deg*deg_as*as_muas  # 1 rad in muas
+
+    #pirel_rad = au*(1.0/DL-1.0/DS)  # DL, DS and au are all in kpc. pi is in rad (small angle appeoximation)
+    #pirel_muas = pirel_rad*rad_muas  # converting units to muas
+    pirel_as = (1./(DL*1000)-1.0/(DS*1000))
+    pirel_muas = pirel_as*as_muas
+    M = theta_E**2/(kappa_muMJ*pirel_muas)  # M in Jupiter masses
+    return M
+
+# x values
+D_L = np.linspace(0.01,7.99,799)
+
+# plot stuff
+plt.close(6)
+plt.figure(num=6, dpi=150)
+xmin, xmax = -0.25, 8.25
+
+# Annotation arrays
+plot_x = np.linspace(xmin,xmax,150)
+plot_y_J = np.ones_like(plot_x)
+plot_y_BD = plot_y_J*13.0
+plot_y_DF = plot_y_J*75.0
+plot_y_E = plot_y_J*0.00314558
+
+######################
+# y vales
+M_9 = MfromthetaE(9.,D_L,DS=8)
+M_25 = MfromthetaE(25.,D_L,DS=8)
+
+# desert fill
+plt.fill_between(D_L, M_9, M_25, 
+                 color='orange', ec='k', alpha=0.7, 
+                 label='Einstein desert')
+######################
+
+# Background fill
+plt.fill_between(plot_x, plot_y_DF, 10**3, 
+                 color='k', alpha=0.2, ec=None, 
+                 label='stellar mass')
+plt.fill_between(plot_x, plot_y_BD, plot_y_DF, 
+                 color='grey', alpha=0.2, ec=None, 
+                 label='BD mass') #, hatch='*'
+
+# Reference mass lines
+plt.axhline(1, 
+            color='grey', 
+            linestyle='dashed', 
+            linewidth=1, 
+            label=r'$1\,M_J$')
+plt.axhline(0.00314558, 
+            color='grey', 
+            linestyle='dotted', 
+            linewidth=1, 
+            label=r'$1\,M_\oplus$')
+
+# plot stuff
+plt.xlabel(r'Lens distance, $D_{\rm L}\, ({\rm kpc})$')
+plt.ylabel(r'Lens mass, $M_{\rm L}\, (M_J$)')
+plt.yscale('log')
+plt.xlim((xmin, xmax))
+plt.ylim((10**-4, 10**3))
+plt.legend(loc='lower right')
+plt.show()
