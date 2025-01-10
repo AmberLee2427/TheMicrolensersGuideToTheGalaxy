@@ -1,1 +1,5 @@
-log-uniform
+######################
+# Your code goes here
+
+# e.g. np.linalg.solve()
+######################

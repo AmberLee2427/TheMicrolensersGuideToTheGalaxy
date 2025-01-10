@@ -1,0 +1,1 @@
+Binary-lens models that do not have sharp perturbations from the packzynski curve, e.g., those with a large finite-source effect.
