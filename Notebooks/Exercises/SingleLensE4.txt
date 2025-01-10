@@ -1,0 +1,10 @@
+######################
+# Do your calculation here
+chi2_0 = chi2(p0, t_data, flux_data, flux_err_data, SL_magnification)
+chi2_opt = chi2(popt, t_data, flux_data, flux_err_data, SL_magnification)
+
+L0 = np.exp(-0.5*chi2_0)
+Lopt = np.exp(-0.5*chi2_opt)
+
+print(f'Likelihood ratio: {Lopt/L0:.4e}')
+######################
