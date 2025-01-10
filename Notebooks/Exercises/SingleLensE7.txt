@@ -1,0 +1,11 @@
+######################
+# E7.1 Write your model fitting code here
+######################
+
+######################
+# E7.2 Do your working here
+######################
+
+#### E7.3 Why does it not make sense for your relative probability to have decreased?
+
+Write you answer here
