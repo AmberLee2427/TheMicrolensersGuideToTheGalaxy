@@ -28,7 +28,7 @@ To embark on your microlensing adventure, simply follow these straightforward st
    ```bash
    git clone https://github.com/AmberLee2427/TheMicrolensersGuideToTheGalaxy.git
    ```
-1. Create a dedicated environments with the required dependencies:
+1. Create a dedicated environment with the required dependencies:
     ```bash
     sudo apt-get install python3-venv
     python3 -m venv .*environment-name*
