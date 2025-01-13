@@ -20,4 +20,5 @@ dependencies:
   - ipydatagrid
   - seaborn
   - corner
+  - tqdm
 prefix: /opt/anaconda3/envs/TheGuide
