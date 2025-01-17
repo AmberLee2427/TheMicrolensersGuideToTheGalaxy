@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.8
+  - python=3.11
   - numpy
   - astropy
   - matplotlib
@@ -21,4 +21,6 @@ dependencies:
   - seaborn
   - corner
   - tqdm
+  - requests
+  - lxml
 prefix: /opt/anaconda3/envs/TheGuide
