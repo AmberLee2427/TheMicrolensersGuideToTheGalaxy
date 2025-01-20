@@ -1,12 +1,12 @@
-name: TheGuide
+name: TheGuide-
 channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.11
-  - numpy
+  - python=3.12
+  - numpy=2.2.1
   - astropy
-  - matplotlib
+  - matplotlib-3.10.0
   - scipy
   - pandas
   - astroquery
@@ -14,7 +14,7 @@ dependencies:
   - ipython
   - jupyterlab
   - ipywidgets
-  - ipympl
+  - ipympl=0.9.6
   - ipykernel
   - emcee
   - ipydatagrid
@@ -22,5 +22,4 @@ dependencies:
   - corner
   - tqdm
   - requests
-  - lxml
 prefix: /opt/anaconda3/envs/TheGuide
