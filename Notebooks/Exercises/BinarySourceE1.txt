@@ -1,5 +1,101 @@
-######################
-# Your code goes here
+# objective function
+def binary_source_chi2(theta: np.ndarray, 
+                       model1: mm.Model, 
+                       model2: mm.Model, 
+                       data: List, 
+                       verbose: Optional[bool] = False,
+                       return_fluxes: Optional[bool] = False
+                       ) -> float:
+    """
+    chi2 function for a binary-source, single-lens, microlensing model.
+    
+    Parameters
+    ----------
+    theta : np.ndarray
+        Array of model parameters being fit.
+    model1 : mm.Model
+        Primary source model.
+    model2 : mm.Model
+        Secondary source model.
+    data : list
+        List of data arrays.
+    verbose : bool, optional
+        Default is False.
+        Print the primary source flux, secondary source flux, and blend flux.
 
-# e.g. np.linalg.solve()
-######################
+    Returns
+    -------
+    float
+        The chi2 value.
+
+    Notes
+    -----
+    The model parameters are unpacked from theta and set to the model1 and model2 parameters.
+    model1 and model2 are MulensModel.Model objects; see MulensModel documentation 
+    (https://rpoleski.github.io/MulensModel/) for more information.
+    """
+    #unpack the data
+    t, flux, flux_err = data
+
+    # model parameters being fit
+    labels = ['t_0', 'u_0', 't_E']
+
+    # change the values of model.parameters to those in theta.
+    theta1 = theta[:3]
+    theta2 = theta[3:]
+    for (label, value1, value2) in zip(labels, theta1, theta2):
+        setattr(model1.parameters, label, value1)
+        setattr(model2.parameters, label, value2)
+    
+    # calculate the model magnification for each source
+    A1 = model1.get_magnification(t)
+    A2 = model2.get_magnification(t)
+
+    ######################
+    # build the matricies for the linear algebra
+    C = np.array([np.sum(A1 * flux * flux_err**-2), np.sum(A2 * flux * flux_err**-2), np.sum(flux * flux_err**-2)])
+    B = np.array([[np.sum(A1**2 * flux_err**-2), np.sum(A1 * A2 * flux_err**-2), np.sum(A1 * flux_err**-2)],
+                  [np.sum(A1 * A2 * flux_err**-2), np.sum(A2**2 * flux_err**-2), np.sum(A2 * flux_err**-2)],
+                  [np.sum(A1 * flux_err**-2), np.sum(A2 * flux_err**-2), np.sum(flux_err**-2)]])
+    
+    # calculate the flux components
+    Theta = np.linalg.solve(B, C)  # ax=b <- B x Theta = C
+    FS1, FS2, FB = Theta # primary source flux, secondary source flux, and blend flux
+    ######################
+
+    # print the flux parameters
+    if verbose:
+        print(f"Primary source flux: {FS1}")
+        print(f"Secondary source flux: {FS2}")
+        print(f"Blend flux: {FB}")
+
+    # calculate the model flux
+    model_flux = A1 * FS1 + A2 * FS2 + FB
+    chi2 = np.sum(((flux - model_flux) / flux_err)**2)
+
+    # In case something goes wrong with the linear algebra
+    if np.isnan(chi2) or np.isinf(chi2):
+        print(f"NaN or inf encountered in chi2 calculation: theta={theta}, chi2={chi2}")
+        return 1e16
+
+    if return_fluxes:
+        return chi2, FS1, FS2, FB
+    else:
+        return chi2
+
+
+# generative model parameters
+t01, u01 = 6100., 0.2
+t02, u02 = 6140., 0.2
+t_E = 25.
+theta = np.array([t01, u01, t_E, t02, u02, t_E])
+
+# initial chi2 value (will print the fluxes)
+chi2 = binary_source_chi2(theta, model1, model2, data, verbose=True)
+
+# generative fluxes
+# source 2 flux used to generate the data
+flux2 = flux1 * flux_ratio
+print('\nprimary source flux used to generate the data:', flux1)
+print('secondary source flux used to generate the data:', flux2)
+print('blend flux used to generate the data:', blend_flux)

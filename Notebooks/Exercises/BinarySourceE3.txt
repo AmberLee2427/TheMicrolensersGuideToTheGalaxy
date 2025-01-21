@@ -1,0 +1,32 @@
+def ln_prob(theta: np.ndarray, model1, model2, data) -> float:
+    """log probability"""
+
+    lp = 0.0
+
+    ######################
+    # Exercise 3: Implement the priors
+    # priors  ##### replace True with conditions
+
+    # add a constraint on tEs with a 1 sig deltatE of 5 days
+    lp += -(theta[2]-theta[5])**2/5**2   # this discourages the tEs from being too different
+
+    if np.any(np.array(theta) < 0) or theta[0] > theta[3] or theta[0] < 6000 or theta[3] < 6000 or theta[0] > 6300 or theta[3] > 6300:
+        return -1e16
+    
+    elif (theta[2]-theta[5])**2 > 20**2:  # max 20 days difference
+        return -1e16
+    ######################
+
+    else: # the proposed parameters values are reasonable
+
+        ######################
+        # Exercise 7: Add a constraint (prior) on the blend flux
+
+        ######################
+
+        # return the log probability
+        return -0.5 * chi2 + lp
+
+# starting lnL
+lnP = ln_prob(theta0, model1, model2, data)
+print('initial log probability:', lnP)

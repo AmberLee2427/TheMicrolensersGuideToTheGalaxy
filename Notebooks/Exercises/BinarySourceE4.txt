@@ -1,0 +1,12 @@
+# emcee parameters
+nsteps = 1000
+######################
+# Exercise 8: Replace these with your values
+nwalkers = 100
+ndim = len(theta0)
+steps_between_plot_updates = 100
+######################
+
+# Set up the sampler
+sampler = emcee.EnsembleSampler(nwalkers, ndim, ln_prob, 
+                                args=[model1, model2, data])

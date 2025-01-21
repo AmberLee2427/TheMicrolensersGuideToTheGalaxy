@@ -1,0 +1,4 @@
+######################
+# Initialize the walkers
+initial_pos = theta0 + 1e-6 * np.random.randn(nwalkers, ndim)
+######################
