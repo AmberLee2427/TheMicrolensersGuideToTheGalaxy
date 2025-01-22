@@ -1,0 +1,109 @@
+######################
+# re make the sampler  (Make sure to run the ln_prob cell after you edit it)
+sampler = emcee.EnsembleSampler(nwalkers, ndim, ln_prob, 
+                                args=[model1, model2, data])
+
+# rerun the sampler
+run_emcee(sampler, initial_pos, nsteps, steps_between_plot_updates, nwalkers, ndim)
+######################
+
+
+
+
+######################
+# corner plot
+plot_corner(final_state, model1, model2, data)
+######################
+
+
+
+
+# Plot the lightcurve
+plt.close(8)
+plt.figure(8)
+
+######################
+# Your code goes here
+
+# Plot the data
+plt.errorbar(time, flux, yerr=flux_err, 
+             fmt='x', 
+             ecolor='k', 
+             capsize=1, 
+             color='k', 
+             alpha=0.6, 
+             zorder=0,
+             label='simulated data'
+             )
+
+chi2_state = np.zeros(nwalkers)
+FS1_state = np.zeros(nwalkers)
+FS2_state = np.zeros(nwalkers)
+FB_state = np.zeros(nwalkers)
+for i in range(nwalkers):
+    chi2_state[i], FS1_state[i], FS2_state[i], FB_state[i] = binary_source_chi2(final_state[i], 
+                                                                                model1, 
+                                                                                model2, 
+                                                                                data, 
+                                                                                return_fluxes=True
+                                                                                )
+
+# find the minimum chi2 sample
+best = np.argmin(chi2_state)
+theta_best = final_state[best]
+print('best fit parameters:', theta_best)
+
+def plot_sample(theta, model1, model2, chi2, FS1, FS2, FB, color='k', alpha=0.1, label='_', zorder=0, ms=1):
+    """Plot the model lightcurve"""
+    model1.parameters.t_0 = theta[0]
+    model1.parameters.u_0 = theta[1]
+    model1.parameters.t_E = theta[2]
+    model2.parameters.t_0 = theta[3]
+    model2.parameters.u_0 = theta[4]
+    model2.parameters.t_E = theta[5]
+
+    F_model = model1.get_magnification(T) * FS1 + model2.get_magnification(T) * FS2 + FB
+
+    plt.plot(T, F_model, color=color, linestyle='-', lw=1, alpha=alpha, label=label, zorder=zorder, ms=ms)
+
+# Plot the model
+for i in np.linspace(0, nwalkers-1, 10, dtype=int):
+    if i==0:
+        label = 'samples'
+    else:
+        label = '_samples'
+
+    plot_sample(final_state[i], 
+                model1, 
+                model2, 
+                chi2_state[i], 
+                FS1_state[i], 
+                FS2_state[i], 
+                FB_state[i], 
+                color='b', 
+                alpha=0.5, 
+                zorder=1, 
+                label=label,
+                ms=3
+                )
+    
+plot_sample(theta_best, 
+            model1, 
+            model2, 
+            chi2_state[best], 
+            FS1_state[best], 
+            FS2_state[best], 
+            FB_state[best], 
+            color='r', 
+            label='best fit', 
+            zorder=2,
+            alpha=1
+            )
+
+
+plt.legend()
+plt.ylabel('flux')
+plt.xlabel('HJD (days)')
+######################
+
+plt.show()

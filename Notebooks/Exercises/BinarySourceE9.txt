@@ -1,0 +1,1 @@
+Any parameters that show diagonal samples in the 2D posteriors of the corner plot.

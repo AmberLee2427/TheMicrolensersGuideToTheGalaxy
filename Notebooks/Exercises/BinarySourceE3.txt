@@ -21,7 +21,7 @@ def ln_prob(theta: np.ndarray, model1, model2, data) -> float:
 
         ######################
         # Exercise 7: Add a constraint (prior) on the blend flux
-
+        chi2 = binary_source_chi2(theta, model1, model2, data, return_fluxes=False)
         ######################
 
         # return the log probability

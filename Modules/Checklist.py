@@ -39,7 +39,7 @@ class Checklist:
                 # Extract lines that start with <h2> and end with </h2>
                 for line in cell['source']:
                     stripped_line = line.strip()
-                    if stripped_line.startswith('<h2>') and stripped_line.endswith('</h2>'):
+                    if stripped_line.startswith('<h2') and stripped_line.endswith('</h2>'):
                         exercises.append(('Markdown', stripped_line))
         
         return exercises
@@ -140,7 +140,7 @@ class Checklist:
         checklist_items = [item[1] for item in exercises]
 
         # strip the '<h2>' and '</h2>' tags from the description
-        checklist_items = [item.replace('<h2>', '').replace('</h2>', '').strip() for item in checklist_items]
+        checklist_items = [item.replace('<h2>', '').replace('<h2 style="color: #808080; font-size: 24px;">', '').replace('</h2>', '').strip() for item in checklist_items]
         
         # Load saved progress
         progress_data = Checklist.load_progress(save_name)
@@ -157,13 +157,19 @@ class Checklist:
         )
         
         # Create a label to display the percentage
-        percentage_label = widgets.Label(value=f"{(progress.value / len(checkboxes)) * 100:.0f}%")
+        if len(checkboxes) == 0:
+            percentage_label = widgets.Label(value=f"100%")
+        else:
+            percentage_label = widgets.Label(value=f"{(progress.value / len(checkboxes)) * 100:.0f}%")
         
         # Function to update the progress bar and percentage label
         def update_progress(change):
             checked_count = sum(checkbox.value for checkbox in checkboxes)
             progress.value = checked_count
-            percentage = (checked_count / len(checkboxes)) * 100
+            if len(checkboxes) == 0:
+                percentage_label.value = f"100%"
+            else:
+                percentage = (checked_count / len(checkboxes)) * 100
             percentage_label.value = f"{percentage:.0f}%"
             
             # Save progress
