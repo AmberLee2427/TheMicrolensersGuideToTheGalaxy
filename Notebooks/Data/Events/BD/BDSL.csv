@@ -1,0 +1,12 @@
+# q, m1_MSolar, P, theta_E_uas, mu_rel, t_E, u0, rho, eventID, adsurl, ref
+1.0, 0.056, 1.0, 91, 48, 6.91, 0.25, 0.00085, OGLE-2007-BLG-224, https://ui.adsabs.harvard.edu/abs/2009ApJ...698L.147G, Gould et al (2009) and Shan et al. (2021)
+1.0, 0.043, 1.0, 127, 2.65, 17.5, 0.011, 0.00005, OGLE-2015-BLG-1268, https://ui.adsabs.harvard.edu/abs/2016ApJ...825...60Z, Zhu et al. (2016)
+1.0, 0.051, 1.0, 51, 6.89, 2.68, 0.092, 0.137, MOA-2017-BLG-147, https://ui.adsabs.harvard.edu/abs/2020AJ....159..134H, Han et al. (2020)
+1.0, 0.044, 1.0, 28, 5.42, 1.87, 0.21, 0.290, MOA-2017-BLG-241, https://ui.adsabs.harvard.edu/abs/2020AJ....159..134H, Han et al. (2020)
+1.0, 0.017, 1.0, 140, 3.42, 14.9, 0.004, 0.041, OGLE-2017-BLG-0896, https://ui.adsabs.harvard.edu/abs/2019AJ....157..106S, Shvartzvald et al. (2019)
+1.0, 0.033, 1.0, 46.1, 10.6, 1.6, 0.0029, 0.0093, MOA-9y-1944, https://ui.adsabs.harvard.edu/abs/2023AJ....166..107K, Koshimoto et al (2023)
+1.0, 0.095, 0.5, 38.7, 15.6, 0.91, 0.105, 0.90, OGLE-2017-BLG-0560b, https://ui.adsabs.harvard.edu/abs/2019A&A...622A.201M, Mroz et al. (2019)
+1.0, 0.074, 0.5, 38.7, 15.6, 0.91, 0.105, 0.90, OGLE-2017-BLG-0560a, https://ui.adsabs.harvard.edu/abs/2019A&A...622A.201M, Mroz et al. (2019)
+1.0, 0.096, 0.5, 104, 9.0, 4.27, 0.160, 0.055, OGLE-2015-BLG-1482a, https://ui.adsabs.harvard.edu/abs/2017ApJ...838..154C, Chung et al. (2017)
+1.0, 0.055, 0.5, 63, 5.5, 4.26, 0.165, 0.091, OGLE-2015-BLG-1482b, https://ui.adsabs.harvard.edu/abs/2017ApJ...838..154C, Chung et al. (2017)
+1.0, 0.08, 1.0, 244, 7.4, 12.0, 1.31, 0.032, OGLE-2016-BLG-1045, https://ui.adsabs.harvard.edu/abs/2018ApJ...863...23S, Shin et al. (2018)
