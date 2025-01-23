@@ -1,0 +1,64 @@
+BD_SL_df = pd.read_csv('Data/Events/BD/BDSL.csv', header=0, skipinitialspace=True)  # brown dwarf single lens
+BD_BLhost_df = pd.read_csv('Data/Events/BD/BDhost.csv', header=0, skipinitialspace=True)  # brown dwarf hosts, any companion 
+BD_BLcomp_df = pd.read_csv('Data/Events/BD/BDcomp.csv', header=0, skipinitialspace=True)  # stellar hosts
+
+# rename all the q columns
+BD_SL_df.rename(columns={'# q': 'q'}, inplace=True)
+BD_BLhost_df.rename(columns={'# q': 'q'}, inplace=True)
+BD_BLcomp_df.rename(columns={'# q': 'q'}, inplace=True)
+
+######################
+# select the brown dwarfs
+
+# ignore warnings from pandas
+import warnings
+warnings.filterwarnings('ignore')
+
+# single lens(q, m1_MSolar, P, theta_E_uas, eventID)
+BD_df = BD_SL_df[['q', 'm1_MSolar', 'P', 'theta_E_uas', 'eventID']]
+# make a column m_MJupiter
+BD_df['m_MJ'] = BD_df['m1_MSolar'] * 1047.57
+# drop the m1_MSolar column
+BD_df.drop(columns=['m1_MSolar'], inplace=True)
+
+# add the BD companions (q, m1_MSolar, P, theta_E_uas, eventID)
+BD_comp_copy = BD_BLcomp_df[['q', 'm2_MJ', 'P', 'theta_E_uas', 'eventID']]
+# rename the m2_MJ column as m_MJ
+BD_comp_copy.rename(columns={'m2_MJ': 'm_MJ'}, inplace=True)
+# append the BD companions to the BD_df
+BD_df = pd.concat([BD_df, BD_comp_copy], ignore_index=True)
+
+# add the BD hosts (q, m1_MSolar, P, theta_E_uas, eventID)
+BD_host_copy = BD_BLhost_df[['q', 'm1_MSolar', 'P', 'theta_E_uas', 'eventID']]
+BD_host_copy['m_MJ'] = BD_host_copy['m1_MSolar'] * 1047.57
+BD_host_copy.drop(columns=['m1_MSolar'], inplace=True)
+BD_df = pd.concat([BD_df, BD_host_copy], ignore_index=True)
+
+# add the BD companions to BD hosts
+# keep only those with m2_MJ > 13
+BD_host_comp = BD_BLcomp_df[BD_BLcomp_df['m2_MJ'] > 13]
+BD_host_comp['m_MJ'] = BD_host_comp['m2_MJ']
+# keep only the columns mathcing BD_df
+BD_df = pd.concat([BD_df, BD_host_comp[['q', 'm_MJ', 'P', 'theta_E_uas', 'eventID']]], ignore_index=True)
+######################
+
+# Plotting
+plt.close(100)
+plt.figure(num=100, figsize=(7, 5))
+
+#make a histogram of m_MJ
+bins = np.linspace(13, 95, 10)
+plt.hist(BD_df['m_MJ'], 
+         bins=bins, 
+         color='red', 
+         edgecolor='black', 
+         alpha=0.3, 
+         density=True, 
+         label='All BDs', 
+         weights=BD_df['P']/np.sum(BD_df['P']))
+
+# Labels and title
+plt.xlabel('Mass ($M_J$)')
+plt.ylabel('Count')
+
+plt.show()
