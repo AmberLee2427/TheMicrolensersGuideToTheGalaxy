@@ -21,6 +21,10 @@ BD_df['m_MJ'] = BD_df['m1_MSolar'] * 1047.57
 # drop the m1_MSolar column
 BD_df.drop(columns=['m1_MSolar'], inplace=True)
 
+print('Sanity checks:')
+print('-----------------')
+print('BD count (SL):', np.sum(BD_df['P']))
+
 # add the BD companions (q, m1_MSolar, P, theta_E_uas, eventID)
 BD_comp_copy = BD_BLcomp_df[['q', 'm2_MJ', 'P', 'theta_E_uas', 'eventID']]
 # rename the m2_MJ column as m_MJ
@@ -28,18 +32,25 @@ BD_comp_copy.rename(columns={'m2_MJ': 'm_MJ'}, inplace=True)
 # append the BD companions to the BD_df
 BD_df = pd.concat([BD_df, BD_comp_copy], ignore_index=True)
 
+print('BD count (SL+comp):', np.sum(BD_df['P']))
+
 # add the BD hosts (q, m1_MSolar, P, theta_E_uas, eventID)
 BD_host_copy = BD_BLhost_df[['q', 'm1_MSolar', 'P', 'theta_E_uas', 'eventID']]
 BD_host_copy['m_MJ'] = BD_host_copy['m1_MSolar'] * 1047.57
 BD_host_copy.drop(columns=['m1_MSolar'], inplace=True)
 BD_df = pd.concat([BD_df, BD_host_copy], ignore_index=True)
 
+print('BD count (SL+comp+hostm1):', np.sum(BD_df['P']))
+
 # add the BD companions to BD hosts
 # keep only those with m2_MJ > 13
-BD_host_comp = BD_BLcomp_df[BD_BLcomp_df['m2_MJ'] > 13]
+BD_host_comp = BD_BLhost_df[BD_BLhost_df['m2_MJ'] > 13]
 BD_host_comp['m_MJ'] = BD_host_comp['m2_MJ']
 # keep only the columns mathcing BD_df
 BD_df = pd.concat([BD_df, BD_host_comp[['q', 'm_MJ', 'P', 'theta_E_uas', 'eventID']]], ignore_index=True)
+
+print('BD count (SL+comp+host):', np.sum(BD_df['P']))
+
 ######################
 
 # Plotting
@@ -47,18 +58,18 @@ plt.close(100)
 plt.figure(num=100, figsize=(7, 5))
 
 #make a histogram of m_MJ
-bins = np.linspace(13, 95, 10)
+bins = np.linspace(13, 95, 15)
 plt.hist(BD_df['m_MJ'], 
          bins=bins, 
          color='red', 
          edgecolor='black', 
          alpha=0.3, 
-         density=True, 
          label='All BDs', 
-         weights=BD_df['P']/np.sum(BD_df['P']))
+         weights=BD_df['P']/np.sum(BD_df['P']),
+         density=True)
 
 # Labels and title
 plt.xlabel('Mass ($M_J$)')
-plt.ylabel('Count')
+plt.ylabel('Probability Density')
 
 plt.show()

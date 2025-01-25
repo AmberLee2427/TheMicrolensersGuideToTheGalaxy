@@ -1,0 +1,48 @@
+plt.close(5)
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), num=5)
+
+######################
+# your code goes here
+
+# Exercise 5
+# Plot BD_df['m_MJ'] vs BD_df['year'] on the first axis (ax1)
+# Set alpha (transparency) based on BD_df['P'] to indicate degenerate solutions
+ax1.scatter(BD_df['year'], BD_df['m_MJ'], alpha=BD_df['P'], c='grey')
+
+# Plot BD_df['m_MJ'] vs BD_df['year'] on the first axis (ax1)
+# Set alpha (transparency) based on BD_df['P'] to indicate degenerate solutions
+ax2.scatter(BD_df['year'], BD_df['q'], alpha=BD_df['P'], c='grey')
+
+# Exercise 6
+# select the kinematic group from BD_df using the eventid column
+kinematic_group = ['MOA-2016-BLG-231', 'OGLE-2016-BLG-1195', 'OGLE-2017-BLG-0896', 'OGLE-2017-BLG-1038']
+BD_kinematic_df = BD_df[BD_df['eventID'].isin(kinematic_group)]
+print(BD_kinematic_df['eventID'], BD_kinematic_df['year'], BD_kinematic_df['m_MJ'], BD_kinematic_df['q'])
+
+# Plot red circles around the kinematic group samples
+ax1.scatter(BD_kinematic_df['year'], BD_kinematic_df['m_MJ'], c='none', edgecolor='red')
+ax2.scatter(BD_kinematic_df['year'], BD_kinematic_df['q'], c='none', edgecolor='red')
+
+# select the low-mass/high-mass-ratio binaries from BD_df using the eventid column
+binaries = ['OGLE-2016-BLG-1266', 'OGLE-2009-BLG-151', 'MOA-2019-BLG-256']
+BD_binaries_df = BD_df[BD_df['eventID'].isin(binaries)]
+print(BD_binaries_df['eventID'], BD_binaries_df['year'], BD_binaries_df['m_MJ'], BD_binaries_df['q'])
+
+# Plot blue circle around the low-mass/high-mass-ratio binaries
+ax1.scatter(BD_binaries_df['year'], BD_binaries_df['m_MJ'], c='none', edgecolor='blue')
+ax2.scatter(BD_binaries_df['year'], BD_binaries_df['q'], c='none', edgecolor='blue')
+######################
+
+# Add labels and title for the first subplot
+ax1.set_xlabel('Year')
+#ax1.set_yscale('log')
+ax1.set_ylabel('Mass ($M_J$)')
+
+#ax2.set_yscale('log')
+ax2.set_xlabel('Year')
+ax2.set_ylabel('Mass ratio ($q$)')
+
+# Adjust layout for better spacing
+plt.tight_layout()
+
+plt.show()

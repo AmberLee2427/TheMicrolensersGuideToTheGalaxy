@@ -1,0 +1,32 @@
+plt.close(5)
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), num=5)
+
+######################
+# your code goes here
+
+# Exercise 5
+# Plot BD_df['m_MJ'] vs BD_df['year'] on the first axis (ax1)
+# Set alpha (transparency) based on BD_df['P'] to indicate degenerate solutions
+ax1.scatter(BD_df['year'], BD_df['m_MJ'], alpha=BD_df['P'], c='grey')
+
+# Plot BD_df['m_MJ'] vs BD_df['year'] on the first axis (ax1)
+# Set alpha (transparency) based on BD_df['P'] to indicate degenerate solutions
+ax2.scatter(BD_df['year'], BD_df['q'], alpha=BD_df['P'], c='grey')
+
+# Exercise 6
+
+######################
+
+# Add labels and title for the first subplot
+ax1.set_xlabel('Year')
+#ax1.set_yscale('log')
+ax1.set_ylabel('Mass ($M_J$)')
+
+#ax2.set_yscale('log')
+ax2.set_xlabel('Year')
+ax2.set_ylabel('Mass ratio ($q$)')
+
+# Adjust layout for better spacing
+plt.tight_layout()
+
+plt.show()
