@@ -1,7 +1,0 @@
-name: TheGuide
-channels:
-  - conda-forge
-  - defaults
-dependencies:
-  - numpy
-prefix: /opt/anaconda3/envs/TheGuide

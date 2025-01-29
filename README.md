@@ -43,7 +43,7 @@ To embark on your microlensing adventure, simply follow these straightforward st
     conda env create --file=environment.yml
     conda activate TheGuide
     ```
-    for Anaconda users. You can use the yaml specific to your operating system for a more stable notebook experience.
+    for Anaconda users. This notebook course currently runs on Python version 3.12.
     
     Alternatively, without using environments (not recommended), you can install the required dependencies as follows:  
     ```bash
