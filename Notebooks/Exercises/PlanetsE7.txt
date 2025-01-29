@@ -1,0 +1,69 @@
+plt.close(8)
+plt.figure(num=8, figsize=(7, 5))
+
+######################
+# Your code goes here
+
+# Fetch data from the ML table in NASA Exoplanet Archive using astroquery
+query = NasaExoplanetArchive.query_criteria(table="ML", select="ml_massratio,ml_modeldef")
+# Filter for entries with ml_modeldef = 1
+planet_df = query.to_pandas()
+
+# Filter out rows with missing values
+planet_df.dropna(subset=['ml_massratio', 'ml_modeldef'])
+planet_df = planet_df[planet_df['ml_modeldef'] == 1]
+
+# fix q order of magnitude
+planet_df['q'] = planet_df['ml_massratio'] * 10**-4
+
+# bins
+bins = np.linspace(-6, 0, 21)
+
+# histograms
+plt.hist(np.log10(planet_df['q']), 
+         bins=bins, 
+         facecolor='white', 
+         edgecolor='black', 
+         alpha=1.0, 
+         density=True, 
+         label='Exoplanets')
+plt.hist(np.log10(BD_BLcomp_df['q']),
+         bins=bins, 
+         facecolor='red', 
+         edgecolor='none', 
+         alpha=0.5, 
+         density=True,
+         weights=BD_BLcomp_df['P']/np.sum(BD_BLcomp_df['P']), 
+         label='Brown Dwarf Companions (Stellar Hosts)')
+plt.hist(np.log10(BD_BLhost_df['q']),
+         bins=bins, 
+         facecolor='orange', 
+         edgecolor='none', 
+         alpha=0.5, 
+         density=True,
+         weights=BD_BLhost_df['P']/np.sum(BD_BLhost_df['P']), 
+         label='Brown Dwarf Hosts')
+######################
+
+# vline at q=0.022 (log10q=-1.65)
+plt.axvline(-1.65, 
+            color='black', 
+            linestyle='dashed', 
+            linewidth=1, 
+            label=r'q = 0.022$')
+
+plt.axvline(np.log10(0.04), 
+            color='black', 
+            linestyle='dotted', 
+            linewidth=1, 
+            label=r'q = 0.04$')
+
+plt.axvline(np.log10(0.14), 
+            color='black', 
+            linestyle='solid', 
+            linewidth=1, 
+            label=r'q = 0.14$')
+
+plt.xlabel(r'$\log_{10}$ Mass Ratio')
+plt.ylabel('Normalised Density')
+plt.legend()

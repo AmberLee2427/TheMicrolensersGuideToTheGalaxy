@@ -1,69 +1,32 @@
-plt.close(8)
-plt.figure(num=8, figsize=(7, 5))
+plt.close(5)
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), num=5)
 
 ######################
-# Your code goes here
+# your code goes here
 
-# Fetch data from the ML table in NASA Exoplanet Archive using astroquery
-query = NasaExoplanetArchive.query_criteria(table="ML", select="ml_massratio,ml_modeldef")
-# Filter for entries with ml_modeldef = 1
-planet_df = query.to_pandas()
+# Exercise 5
+# Plot BD_df['m_MJ'] vs BD_df['year'] on the first axis (ax1)
+# Set alpha (transparency) based on BD_df['P'] to indicate degenerate solutions
+ax1.scatter(BD_df['year'], BD_df['m_MJ'], alpha=BD_df['P'], c='grey')
 
-# Filter out rows with missing values
-planet_df.dropna(subset=['ml_massratio', 'ml_modeldef'])
-planet_df = planet_df[planet_df['ml_modeldef'] == 1]
+# Plot BD_df['m_MJ'] vs BD_df['year'] on the first axis (ax1)
+# Set alpha (transparency) based on BD_df['P'] to indicate degenerate solutions
+ax2.scatter(BD_df['year'], BD_df['q'], alpha=BD_df['P'], c='grey')
 
-# fix q order of magnitude
-planet_df['q'] = planet_df['ml_massratio'] * 10**-4
+# Exercise 6
 
-# bins
-bins = np.linspace(-6, 0, 21)
-
-# histograms
-plt.hist(np.log10(planet_df['q']), 
-         bins=bins, 
-         facecolor='white', 
-         edgecolor='black', 
-         alpha=1.0, 
-         density=True, 
-         label='Exoplanets')
-plt.hist(np.log10(BD_BLcomp_df['q']),
-         bins=bins, 
-         facecolor='red', 
-         edgecolor='none', 
-         alpha=0.5, 
-         density=True,
-         weights=BD_BLcomp_df['P']/np.sum(BD_BLcomp_df['P']), 
-         label='Brown Dwarf Companions (Stellar Hosts)')
-plt.hist(np.log10(BD_BLhost_df['q']),
-         bins=bins, 
-         facecolor='orange', 
-         edgecolor='none', 
-         alpha=0.5, 
-         density=True,
-         weights=BD_BLhost_df['P']/np.sum(BD_BLhost_df['P']), 
-         label='Brown Dwarf Hosts')
 ######################
 
-# vline at q=0.022 (log10q=-1.65)
-plt.axvline(-1.65, 
-            color='black', 
-            linestyle='dashed', 
-            linewidth=1, 
-            label=r'q = 0.022$')
+# Add labels and title for the first subplot
+ax1.set_xlabel('Year')
+#ax1.set_yscale('log')
+ax1.set_ylabel('Mass ($M_J$)')
 
-plt.axvline(np.log10(0.04), 
-            color='black', 
-            linestyle='dotted', 
-            linewidth=1, 
-            label=r'q = 0.04$')
+#ax2.set_yscale('log')
+ax2.set_xlabel('Year')
+ax2.set_ylabel('Mass ratio ($q$)')
 
-plt.axvline(np.log10(0.14), 
-            color='black', 
-            linestyle='solid', 
-            linewidth=1, 
-            label=r'q = 0.14$')
+# Adjust layout for better spacing
+plt.tight_layout()
 
-plt.xlabel(r'$\log_{10}$ Mass Ratio')
-plt.ylabel('Normalised Density')
-plt.legend()
+plt.show()
