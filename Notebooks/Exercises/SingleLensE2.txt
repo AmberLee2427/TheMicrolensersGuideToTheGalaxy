@@ -1,0 +1,28 @@
+######################
+# Initial guess
+u0 = 0.7
+t0 = 7889
+tE = 30
+######################
+
+# magnification model for initial guess chi2
+A_0 = SL_magnification(u0, t0, tE, t_data)
+
+# Model
+t_model = np.linspace(7750, 8000, 1000)
+A_model = SL_magnification(u0, t0, tE, t_model)
+
+p0 = [u0, t0, tE]
+FS0, FB0 = calc_Fs(A_0, flux_data, flux_err_data**2)
+
+# Plot the data and guess
+plt.close(2)
+plt.figure(figsize=(9,6), num=2)
+plt.errorbar(t_data, flux_data, yerr=flux_err_data, fmt='x', color='black', label='data')
+plt.plot(t_model, FS0*A_model + FB0, color='red', label='Initial Guess')
+plt.xlabel('HJD - 2450000')
+plt.ylabel('Flux')
+plt.title('Single Lens Generated Lightcurve')
+plt.xlim(7750, 8000)
+plt.legend()
+plt.show()
