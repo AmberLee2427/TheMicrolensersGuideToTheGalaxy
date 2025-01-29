@@ -1,0 +1,62 @@
+plt.close(9)
+plt.figure(num=9, figsize=(7, 5))
+
+# Plot m1 vs m2
+plt.scatter(ML_df['m1_MJ'], 
+            ML_df['m2_MJ'], 
+            color='k', 
+            marker='x', 
+            lw=0.5, 
+            label='exoplanet archive'
+            )
+
+BD_BLcomp_df['m1_MJ'] = BD_BLcomp_df['m1_MSolar'] * 1047.57
+BD_BLhost_df['m1_MJ'] = BD_BLhost_df['m1_MSolar'] * 1047.57
+
+plt.scatter(BD_BLcomp_df['m1_MJ'], 
+            BD_BLcomp_df['m2_MJ'], 
+            color='b', 
+            label="Table 1: BD secondaries", 
+            alpha=0.5
+            )
+plt.scatter(BD_BLhost_df['m1_MJ'], 
+            BD_BLhost_df['m2_MJ'], 
+            color='m', 
+            label="Table 1: BD primaries", 
+            alpha=0.5)
+
+# Annotations
+x = np.linspace(0.1, 1400., 1400)
+y = x * 1.0
+plt.plot(x, y, 'r-', lw=0.2, label=r'$q=1.0$')
+y = x * 0. + 13.0
+plt.plot(x,y,'k-', alpha=0.2, label='Deuterium fusion limit')
+y = x * 0. + 90.0
+plt.plot(x, y, 'k-', alpha=0.1, label='Sustained Hydrogen fusion limit')
+y = np.linspace(0.001, 1000., 1000)
+x = y * 0. + 13.0
+plt.plot(x, y, 'k-', alpha=0.2)
+x = y * 0. + 90.0
+plt.plot(x, y, 'k-', alpha=0.1)
+
+######################
+# Your code goes here
+x = np.linspace(0.1, 1400., 1400)
+y = x * 0.022
+plt.plot(x, y,'k:', label=r'$q=0.022$', lw=0.2)
+y = x * 0.04
+plt.plot(x, y,'k--', label=r'$q=0.04$', lw=0.2)
+y = x * 0.14
+plt.plot(x, y,'k-', label=r'$q=0.14$', lw=0.2)
+######################
+
+plt.xlabel(r'$m_1$ ($M_J$)')
+plt.ylabel(r'$m_2$ ($M_J$)')
+plt.title('Planet and BD Binary Lens Events')
+plt.xlim((1, 1400))
+plt.ylim((0.001,100.))
+plt.yscale('log')
+plt.xscale('log')
+plt.legend(loc='upper left')
+
+plt.show()

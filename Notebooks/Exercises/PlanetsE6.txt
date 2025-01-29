@@ -14,6 +14,7 @@ ax1.scatter(BD_df['year'], BD_df['m_MJ'], alpha=BD_df['P'], c='grey')
 ax2.scatter(BD_df['year'], BD_df['q'], alpha=BD_df['P'], c='grey')
 
 # Exercise 6
+
 # select the kinematic group from BD_df using the eventid column
 kinematic_group = ['MOA-2016-BLG-231', 'OGLE-2016-BLG-1195', 'OGLE-2017-BLG-0896', 'OGLE-2017-BLG-1038']
 BD_kinematic_df = BD_df[BD_df['eventID'].isin(kinematic_group)]
@@ -24,11 +25,11 @@ ax1.scatter(BD_kinematic_df['year'], BD_kinematic_df['m_MJ'], c='none', edgecolo
 ax2.scatter(BD_kinematic_df['year'], BD_kinematic_df['q'], c='none', edgecolor='red')
 
 # select the low-mass/high-mass-ratio binaries from BD_df using the eventid column
-binaries = ['OGLE-2016-BLG-1266', 'OGLE-2009-BLG-151', 'MOA-2019-BLG-256']
+binaries = ['OGLE-2016-BLG-1266', 'OGLE-2009-BLG-151', 'OGLE-2012-BLG-0358']
 BD_binaries_df = BD_df[BD_df['eventID'].isin(binaries)]
 print(BD_binaries_df['eventID'], BD_binaries_df['year'], BD_binaries_df['m_MJ'], BD_binaries_df['q'])
 
-# Plot blue circle around the low-mass/high-mass-ratio binaries
+# Plot blue circle around the low-mass binaries
 ax1.scatter(BD_binaries_df['year'], BD_binaries_df['m_MJ'], c='none', edgecolor='blue')
 ax2.scatter(BD_binaries_df['year'], BD_binaries_df['q'], c='none', edgecolor='blue')
 ######################
