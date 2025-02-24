@@ -1,0 +1,19 @@
+# Numerical integration for the mass inside 50 kpc.
+######################
+# Your code goes here
+r_max = 50.0  # kpc
+
+# Integrate density * r^2 from 0 to r_max.
+mass_integral, error = quad(lambda r: nfw_density(r) * r**2, 0.01, r_max)
+# Total mass is 4*pi * integral.
+M_total = 4 * np.pi * mass_integral
+
+print(f"Total dark matter mass enclosed within {r_max} kpc for a default (c=12) NFW profile: {M_total:.2e} M_sun")
+
+mass_integral, error = quad(lambda r: nfw_density(r, 
+                                                  rho0=rho_s_for_lowest_reasonable_mass, 
+                                                  rs=rs_for_lowest_reasonable_mass
+                                                  ) * r**2, 0.01, r_max)
+M_total = 4 * np.pi * mass_integral
+print(f"Total dark matter mass enclosed within {r_max} kpc for a c=10 NFW profile: {M_total:.2e} M_sun")
+######################
