@@ -1,0 +1,86 @@
+# K2-C9 Footprint 
+# like https://keplergo.github.io/KeplerScienceWebsite/images/k2/k2-c09-field.png, 
+# from https://keplergo.github.io/KeplerScienceWebsite/k2-fields.html
+
+footprint_dictionary = json.load(open("./Data/k2-footprint.json"))
+
+# plot srtuff
+plt.close(10)
+plt.figure(num=10, figsize=(7, 7))
+
+# K2 Footprint
+channels = footprint_dictionary["c9"]["channels"]
+for c in channels.keys():
+    channel = channels[c]
+    plt.plot(channel["corners_ra"] + channel["corners_ra"][:1],
+             channel["corners_dec"] + channel["corners_dec"][:1], color='lightblue')
+
+# Other k2 details
+start_date = footprint_dictionary["c9"]["start"]
+stop_date = footprint_dictionary["c9"]["stop"]
+field_features = footprint_dictionary["c9"]["comments"]
+field_features = field_features.split(",")
+for feature in field_features:
+    if feature[0] == " ":  # remove leading space
+        feature = feature[1:]
+print('Field features:', field_features)
+
+# Query Simbad for valid features
+# Collect results in a list
+table_list = []
+
+for feature in field_features:
+    result_table = Simbad.query_object(feature)
+    if result_table is not None:
+        table_list.append(result_table)
+
+# Stack all individual tables into one big table
+if table_list:
+    # turned off Astropy warnings because of this merge
+    combined_table = vstack(table_list)
+    print(combined_table.pformat_all())
+else:
+    print("No valid Simbad results found.")
+
+######################
+# Your code goes here
+# Extract RA and Dec for plotting (convert to floats, ignoring None values)
+simbad_ra = np.array([float(row["ra"]) for row in combined_table if row["ra"] is not None])
+simbad_dec = np.array([float(row["dec"]) for row in combined_table if row["dec"] is not None])
+simbad_names = [row["main_id"] for row in combined_table if row["main_id"] is not None]
+
+# Plot the Simbad objects on top
+plt.scatter(simbad_ra, simbad_dec, color='red', marker='o', label="Simbad Objects", zorder=2)
+
+# Add labels for each object
+for ra, dec, name in zip(simbad_ra, simbad_dec, simbad_names):
+    plt.text(ra-0.3, dec, name.replace("NAME ", ""), fontsize=8, ha="left", color="black")
+######################
+
+# Plot stuff
+plt.plot(ss_ra, ss_dec, color='red', linestyle='dashed')
+plt.text(np.mean(ss_ra), np.mean(ss_dec)-0.5, "Microlensing\nSuperstamp\nArea", fontsize=8, ha="center", color="black")
+#print(tap_table.colnames)
+plt.plot(tap_table["RAJ2000"], tap_table["DEJ2000"], 'x', color='grey', label="TAP Objects", zorder=1)
+
+# flip the x-axis
+ax = plt.gca()
+xlim = ax.get_xlim()
+ylim = ax.get_ylim()
+ax.set_xlim(xlim[::-1])
+ax.set_ylim(ylim)
+
+# Customize tick labels
+xticklims = [np.floor(xlim[0]/2)*2, np.ceil(xlim[1]/2)*2]  # Round to nearest even number
+yticklims = [np.floor(ylim[0]/2)*2, np.ceil(ylim[1]/2)*2]
+xticks = np.linspace(xticklims[0], xticklims[1], int((xticklims[1] - xticklims[0])/2 + 1), dtype=int)
+yticks = np.linspace(yticklims[0], yticklims[1], int((yticklims[1] - yticklims[0])/2 + 1), dtype=int)
+xtick_labels = [f"{tick}°" for tick in xticks]  # Add degree symbol to labels
+ytick_labels = [f"{tick}°" for tick in yticks]
+plt.xticks(xticks, xtick_labels)
+plt.yticks(yticks, ytick_labels)
+
+plt.ylabel('Dec')
+plt.xlabel('RA')
+ax.set_aspect('equal')
+plt.show()

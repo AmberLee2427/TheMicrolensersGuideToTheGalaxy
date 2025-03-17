@@ -1,0 +1,23 @@
+aladin.target = "269.0 -28.0"
+
+# Create a table with a hacky Superstamp outline
+ss_outline = Table(names=['_longitude', '_latitude'], 
+                    dtype=[float, float])
+
+n_pts = 10  # number of “dots” per edge
+for (ra1, dec1), (ra2, dec2) in zip(zip(ss_ra, ss_dec), zip(ss_ra[1:], ss_dec[1:])):
+    ras = np.linspace(ra1, ra2, n_pts)
+    decs = np.linspace(dec1, dec2, n_pts)
+    for r, d in zip(ras, decs):
+        ss_outline.add_row([r, d])
+
+# Add it to Aladin
+aladin.add_table(ss_outline, color='yellow', shape='cross')
+
+#############
+#Your code goes here
+
+# Add the K2 targets to the Aladin view
+aladin.add_table(tap_records.to_table(), color="red", shape="plus")
+
+#############

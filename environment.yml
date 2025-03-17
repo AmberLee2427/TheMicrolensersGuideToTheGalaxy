@@ -22,4 +22,5 @@ dependencies:
   - corner
   - tqdm
   - requests
+  - pyvo
 prefix: /opt/anaconda3/envs/TheGuide
