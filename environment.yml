@@ -23,4 +23,8 @@ dependencies:
   - tqdm
   - requests
   - pyvo
+  - pip:
+      - MulensModel
+      - VBMicrolensing
+
 prefix: /opt/anaconda3/envs/TheGuide
