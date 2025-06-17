@@ -1,7 +1,140 @@
-# Fit a point-source (1S1L) model to event OB170002
-
-# I seem to have lost this one
 
 ######################
 # Your code here
+# Fitting a point-source 1S1L model to OB170002
+
+# new objective function
+#--------------------------------
+def chi2_many_datasets(
+                       p: List[float],  # parameters
+                       data: dict,  # data dictionary of (t, f, f_err)
+                       SL_magnification: Callable[[float, float, float, np.ndarray], np.ndarray]
+                      ) -> float:
+    '''
+    Calculates the chi-squared value for a point-source 1S1L model.
+
+    Parameters
+    ----------
+    p : List[float]
+        Parameters of the point-source 1S1L model.
+    data : dict
+        Data dictionary of (t, f, f_err) for each observatory.
+    SL_magnification : Callable[[float, float, float, np.ndarray], np.ndarray]
+        Magnification function of the point-source 1S1L model.
+
+    Returns
+    -------
+    chi2 : float
+        Chi-squared value.
+    '''
+
+    chi2 = 0
+    for key in data.keys():
+        t, f, f_err = data[key]
+        A = SL_magnification(p[0], p[1], p[2], t)
+        FS, FB = calc_Fs(A, f, f_err**2)
+        F = FS * A + FB
+        chi2 += np.sum((f - F)**2 / f_err**2)
+    return chi2
+
+
+# plotting the initial guess
+#--------------------------------
+plt.close(5)
+plt.figure(figsize=(9,6), num=5)
+colors = ('purple', 'violet', 'plum', 'thistle')
+
+# Initial guess
+t_0_guess = 7793
+t_E_guess = 10
+u_0_guess = 0.1
+p_0 = [u_0_guess, t_0_guess, t_E_guess]
+
+# Mask large errors?
+mask_large_errors = False
+filtered_data = {}
+
+# plot the initial guess and create a filtered data dictionary
+# filterred_data == data, if mask_large_errors == False
+# dictionary format: data[obskey] = (t, f, f_err)
+for i, key in enumerate(data.keys()):
+
+    if key == 'OGLE':
+        zp = 28
+    else:
+        zp = 28.65
+
+    flux = data[key][1]
+    flux_err = data[key][2]
+    mag = flux2mag(flux, zp=zp)
+    mag_err = flux2mag_err(flux, flux_err)
+    t = data[key][0]
+
+    # Remove data with large errors
+    if mask_large_errors:
+        error_mask = mag_err < 0.1
+    else:
+        error_mask = [True] * len(mag)
+
+    plt.errorbar(
+                t[error_mask], 
+                mag[error_mask], 
+                yerr=mag_err[error_mask], 
+                fmt='x', 
+                color=colors[i], 
+                label=key,
+                zorder=i+1
+                )
+    
+    filtered_data[key] = (t[error_mask], flux[error_mask], flux_err[error_mask])
+
+# fit FS FB based on OGLE data
+key = 'OGLE'
+zp = 28.0
+t_model = np.linspace(7750, 8000, 1000)
+
+A_0_model = SL_magnification(*p_0, t_model)
+print(max(A_0_model), max(A_0))
+A_0 = SL_magnification(*p_0, filtered_data[key][0])
+FS, FB = calc_Fs(A_0, filtered_data[key][1], filtered_data[key][2]**2)
+F_model = FS * A_0_model + FB
+mag_model = flux2mag(F_model, zp=zp)
+
+plt.plot(t_model, mag_model, 'k:', label='initial guess', zorder=10)
+
+
+# fit to all the data simultaneously
+#--------------------------------
+# Minimize the chi squared value
+result = minimize(
+                  chi2_many_datasets, 
+                  p_0, 
+                  args=(filtered_data, SL_magnification), 
+                  method='Nelder-Mead'
+                  )
+popt = result.x
+print(result)
+
+
+# plot the fit
+#--------------------------------
+key = 'OGLE'
+zp = 28.0
+
+A_opt = SL_magnification(*popt, filtered_data[key][0])
+A_opt_model = SL_magnification(*popt, t_model)
+FS, FB = calc_Fs(A_opt, filtered_data[key][1], filtered_data[key][2]**2)
+F_opt = FS * A_opt_model + FB
+mag_opt = flux2mag(F_opt, zp=zp)
+
+plt.plot(t_model, mag_opt, 'k-', label='fit', lw=1, alpha=0.5, zorder=11)
+
+
+plt.xlabel('HJD - 2450000')
+plt.ylabel('Magnitude (zp = 28)')
+plt.title('OB170002')
+plt.xlim(7750, 8000)
+plt.ylim(20, 16)
+plt.legend()
+plt.show()
 ######################

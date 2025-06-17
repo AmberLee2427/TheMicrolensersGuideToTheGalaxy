@@ -1,4 +1,8 @@
-def chi2(p: List[float], t: np.ndarray, f: np.ndarray, sig: np.ndarray,
+def chi2(
+         p: List[float], 
+         t: np.ndarray, 
+         f: np.ndarray, 
+         sig: np.ndarray,
          SL_magnification: Callable[[float, float, float, np.ndarray], np.ndarray]
          ) -> float:
     '''
@@ -29,43 +33,3 @@ def chi2(p: List[float], t: np.ndarray, f: np.ndarray, sig: np.ndarray,
     ######################
 
     return chi2_value
-
-
-# Minimize the chi squared value
-result = minimize(chi2, p0, 
-                  args=(t_data, flux_data, flux_err_data, SL_magnification), 
-                  method='Nelder-Mead')
-popt = result.x
-print(result)
-
-# Model
-A_model_opt = SL_magnification(popt[0], 
-                               popt[1], 
-                               popt[2], 
-                               t_model)  # model line for best fit parameters
-A_opt = SL_magnification(popt[0], 
-                         popt[1], 
-                         popt[2], 
-                         t_data)  # model flux values for best fit parameters
-FS_opt, FB_opt = calc_Fs(A_opt, 
-                         flux_data, 
-                         flux_err_data**2)  # best fit flux parameters
-
-# Plot
-plt.close(3)
-plt.figure(figsize=(9,6), num=3)
-
-plt.errorbar(t_data, flux_data, 
-             yerr=flux_err_data, 
-             fmt='x', color='black', label='data')
-plt.plot(t_model, FS0*A_model + FB0, 
-         color='red', label='Initial Guess', alpha=0.3)
-plt.plot(t_model, FS_opt*A_model_opt + FB_opt, 
-         color='red', label='Best Fit')
-
-plt.xlabel('HJD - 2450000')
-plt.ylabel('Flux')
-plt.title('Single Lens Generated Lightcurve')
-plt.xlim(7750, 8000)
-plt.legend()
-plt.show()
