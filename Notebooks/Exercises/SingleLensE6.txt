@@ -5,14 +5,14 @@ rho_index = int(1000/4) # for adjusting the location of the source markers in th
 # Seting up a MulensModel object
 fspl = MulensModel.Model({'t_0': 0, 'u_0': 1, 't_E': 1, 'rho': rho})  # the parameters here don't matter - we will 
                                                                       # change them later
-
+                                                                      
 # Setting the limbdarkened-source magnification method, based on the source size
 if rho <= 0.1:
-    fspl.set_default_magnification_method('finite_source_LD_Yoo04')
+    fspl.set_magnification_methods([2450000., 'finite_source_LD_Yoo04', 2470000.])
 elif rho >= 2.0:
-    fspl.set_default_magnification_method('finite_source_LD_Lee09')
+    fspl.set_magnification_methods([2450000., 'finite_source_LD_Lee09', 2470000.])
 else:
-    fspl.set_default_magnification_method('finite_source_LD_WittMoa94')
+    fspl.set_magnification_methods([2450000., 'finite_source_LD_WittMoa94', 2470000.])
 
 tE = 1.0  # t is in units of tE instead of days
 # Theta (parameter list: [t0, u0, tE, rho])
@@ -59,7 +59,7 @@ for i in trajectories_df.index:
     
     # Updatting the mulens model object with the new parameters
     for i, parameter in enumerate(parameters_to_fit):
-        setattr(fspl.parameters, parameter, Theta[i])
+        setattr(fspl.parameters, parameter, Theta[i])  
     
     # Magnification curve array
     ######################
@@ -100,4 +100,4 @@ ax[0].set_ylim(ylims[0],ylims[1])
 ax[1].set_xlim(xlims[0],xlims[1])
 
 # Save
-plt.savefig('single_trajectories_FS.png', bbox_inches='tight')  # 'tight' removes outer padding
+#plt.savefig('/Products/single_trajectories_FS.png', bbox_inches='tight')  # 'tight' removes outer padding

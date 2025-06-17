@@ -1,11 +1,155 @@
 ######################
 # E7.1 Write your model fitting code here
+
+# Nelder-Mead
+#--------------------------------
+# Minimize chi2_fun using the initial guess
+result = minimize(
+    chi2_fun,
+    Theta0,
+    args=(labels, OB170002),
+    method='Nelder-Mead'  # or 'Powell', 'L-BFGS-B', etc.
+)
+
+# Extract best-fit parameters
+best_fit_params = result.x
+best_fit_rho = best_fit_params[3]
+
+# uncertainty on rho
+# Scan rho around the best-fit value
+rho_values = np.linspace(0.0, 1.0, 1000)
+chi2_values = []
+
+for rho in rho_values:
+    params = best_fit_params.copy()
+    params[3] = rho
+    chi2 = chi2_fun(params, labels, OB170002)
+    chi2_values.append(chi2)
+
+chi2_values = np.array(chi2_values)
+chi2_min = np.min(chi2_values)
+
+# Find where chi2 = chi2_min + 1
+within_1sigma = np.where(chi2_values < chi2_min + 1)[0]
+rho_lower = rho_values[within_1sigma[0]]
+rho_upper = rho_values[within_1sigma[-1]]
+
+print(f"Best fit rho (Nelder-Mead) = {best_fit_rho:.5f} (+{rho_upper - best_fit_rho:.5f}, -{best_fit_rho - rho_lower:.5f})")
+
+
+# MCMC
+#--------------------------------
+import emcee
+
+def log_prior(theta):
+    t0, u0, tE, rho = theta
+    if (u0 > 0) and (tE > 0) and (0 < rho < 1.0):
+        return 0.0
+    return -np.inf
+
+# Log-likelihood: -0.5 * chi2
+def log_likelihood(theta, labels, event):
+    return -0.5 * chi2_fun(theta, labels, event)
+
+# Log-probability
+def log_probability(theta, labels, event):
+    lp = log_prior(theta)
+    if not np.isfinite(lp):
+        return -np.inf
+    return lp + log_likelihood(theta, labels, event)
+
+ndim = 4  # number of parameters
+nwalkers = 32  # number of MCMC walkers
+nsteps = 2000  # number of steps
+
+# Initial positions: small Gaussian ball around the initial guess
+pos = Theta0 + 1e-4 * np.random.randn(nwalkers, ndim)
+# Ensure all initial rho are positive and < 0.1
+for p in pos:
+    p[3] = np.abs(p[3]) % 0.1
+
+sampler = emcee.EnsembleSampler(
+    nwalkers, ndim, log_probability, args=(labels, OB170002)
+)
+
+print("Running MCMC...")
+sampler.run_mcmc(pos, nsteps, progress=True)
+
+# Discard burn-in and flatten the chain
+burnin = nsteps // 2
+samples = sampler.get_chain(discard=burnin, flat=True)
+
+# Get median and 1-sigma for rho
+rho_samples = samples[:, 3]
+rho_median = np.median(rho_samples)
+rho_std = np.std(rho_samples)
+
+print(f"best fit rho (MCMC) = {rho_median:.5f} ± {rho_std:.5f}")
+
+plt.close(711)
+fig, axes = plt.subplots(ndim, 1, figsize=(8, 2.5 * ndim), sharex=True, num=711)
+
+for i in range(ndim):
+    ax = axes[i]
+    ax.plot(sampler.get_chain()[:, :, i], alpha=0.5)
+    ax.set_ylabel(labels[i])
+    ax.set_title(labels[i])
+
+axes[-1].set_xlabel('Step')
+plt.tight_layout()
+plt.show()
+
+plt.close(712)
+plt.figure(712)
+plt.hist(rho_samples, bins=50, alpha=0.7)
+plt.xlabel('rho')
+plt.ylabel('Frequency')
+plt.title('Posterior distribution of rho')
+plt.show()
+######################
+
+######################
+# Write you answer for E7.1 here
+
+No. Rho is unconstrained; the uncertainty recovers the bounds with Nelder-Mead and the posterior is flat with MCMC.
 ######################
 
 ######################
 # E7.2 Do your working here
+
+plt.close(13)
+plt.figure(13)
+
+chi20 = chi2_fun(Theta0, labels, OB170002)  # initial guess chi2
+OB170002.plot_model(color='k', label=r'Initial Guess ($\chi^2 = %1.3f$)' %chi20, linestyle=':', t_range=[7000, 8100])
+OB170002.plot_data()  # MulensModel automatically fits for the source and blend flux for the  
+# given model.
+chi2f = chi2_fun(best_fit_params, labels, OB170002)  # the nelder-mead fit
+OB170002.plot_model(color='k', label=r'Best Fit ($\chi^2 = %1.3f$)' %chi2f, linestyle='-', t_range=[7000, 8100])
+
+delta_chi2 = chi20 - chi2f
+print(f"Delta chi2 = {delta_chi2:.3f}")
+relative_prob = np.exp(delta_chi2 / 2)
+print(f"Relative probability (best fit vs. initial guess): {relative_prob:.3e}")
+
+plt.legend(loc='best')
+plt.title('OB170002')
+plt.ylim(12.5, 10)
+plt.xlim(7750,8000)
+plt.show()
 ######################
 
-#### E7.3 Why does it not make sense for your relative probability to have decreased?
 
-Write you answer here
+######################
+# Write you answer for E7.3 here
+
+It does not make sense for the relative probability to decrease (i.e., for the best-fit finite-source model to be less probable than the initial guess) because the finite-source point-lens (FSPL) model is a generalization of the point-source point-lens (PSPL) model. Specifically, the PSPL model is simply the special case of the FSPL model where the source size parameter, ρ, approaches zero.
+When fitting the data with the FSPL model, the optimizer is free to choose any value of ρ, including values very close to zero. Therefore, the FSPL fit should always be able to recover the PSPL solution by setting ρ ≈ 0. This means that the best-fit FSPL model should have a chi-squared value that is at least as good as (and typically equal to or better than) the PSPL fit.
+If your relative probability decreases (i.e., the best-fit FSPL model has a higher chi-squared than the PSPL model), it usually means that the fit did not converge properly, or that the optimizer was stuck at a suboptimal value of ρ (for example, if you started with a random, nonzero ρ and the fit did not move it close to zero). In a properly performed fit, the FSPL model should never be worse than the PSPL model, because it includes the PSPL as a limiting case.
+
+**Summary:**
+
+* The FSPL model can always reproduce the PSPL result by setting ρ very close to zero.
+* The best-fit FSPL model should never be less probable than the PSPL model.
+* A decrease in relative probability indicates a problem with the fit, not with the models themselves.
+######################
