@@ -167,7 +167,7 @@ class Checklist:
             checked_count = sum(checkbox.value for checkbox in checkboxes)
             progress.value = checked_count
             if len(checkboxes) == 0:
-                percentage_label.value = f"100%"
+                percentage = 100
             else:
                 percentage = (checked_count / len(checkboxes)) * 100
             percentage_label.value = f"{percentage:.0f}%"
