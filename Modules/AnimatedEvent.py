@@ -36,13 +36,6 @@ def create_lens_animation(M: float,
     -----
     The file defaults are set to work with the RemnantsAndDarkMatter.ipynb notebook.
     """
-    # Calculate Einstein radius
-    kappa = 8.144  # mas/M_sun
-    as2mas = 1000.0
-    pirel_as = (1.0 / (Dl * 1000) - 1.0 / (Ds * 1000))
-    pirel_mas = pirel_as * as2mas
-    theta_E = np.sqrt(kappa * M * pirel_mas)
-
     # **Fixed Frame Interval**
     frame_interval = 1000/5  # constant for all masses
 
