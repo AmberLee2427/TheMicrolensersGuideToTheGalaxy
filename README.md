@@ -43,7 +43,7 @@ To embark on your microlensing adventure, simply follow these straightforward st
     conda env create --file=environment.yml
     conda activate TheGuide
     ```
-    for Anaconda users. This notebook course currently runs on Python version 3.12.
+    for Anaconda users. This notebook course currently runs on Python version 3.11.
     
     Alternatively, without using environments (not recommended), you can install the required dependencies as follows:  
     ```bash
@@ -60,7 +60,7 @@ To embark on your microlensing adventure, simply follow these straightforward st
 
 And voilà! You’re ready to launch into the universe of data and discovery.
 
-If however, this installation process leaves you as maniacally depressed as the adroid, Marvin, save yourself some heartache and refer to the expertise of your institutions designated tech expert. If you continue to experience faliures to launch, contact the project author. 
+If however, this installation process leaves you as maniacally depressed as the android, Marvin, save yourself some heartache and refer to the expertise of your institutions designated tech expert. If you continue to experience failures to launch, contact the project author. 
 
 Some of the more specialised notebooks in this guide have further install requirements that we recommend you tackle on an as-needed basis.
 
@@ -70,7 +70,7 @@ Open the Jupyter notebooks nestled within the `Notebooks` directory, where each 
 
 ## Contributing
 
-Your contributions are the hydrogen that makes this project shine brighter! If you wish to become an Author and enhance these resources—whether through bug fixes, clever improvements, or new exercises—please don’t hesitate to contact the project author at malpas.1@osu.edu. Every bit of input is apprecieted.
+Your contributions are the hydrogen that makes this project shine brighter! If you wish to become an Author and enhance these resources—whether through bug fixes, clever improvements, or new exercises—please don’t hesitate to contact the project author at malpas.1@osu.edu. Every bit of input is appreciated.
 
 ### Authors
 - Amber Malpas
