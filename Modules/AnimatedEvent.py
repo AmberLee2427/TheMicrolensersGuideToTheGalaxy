@@ -107,10 +107,10 @@ def create_lens_animation(M: float,
 
 # Test the function if this script is run directly
 if __name__ == "__main__":
-    M=10,  # Stellar-mass black hole
-    mu=5,  # Proper motion in mas/yr
-    Dl=2,  # Lens distance in kpc
-    Ds=8,  # Source distance in kpc
+    M = 10  # Stellar-mass black hole
+    mu = 5  # Proper motion in mas/yr
+    Dl = 2  # Lens distance in kpc
+    Ds = 8  # Source distance in kpc
     create_lens_animation(
         M,
         mu,
