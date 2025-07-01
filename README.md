@@ -82,7 +82,7 @@ Your contributions are the hydrogen that makes this project shine brighter! If y
 
 ## License
 
-Fear not, for the original material within these resources, including code snippets, is free for use—like the best snacks on an interstellar flight. However, do keep in mind that any copyrighted material within the notebooks is bound by the restrictions of its original copyright holders. 
+This project is released under the [MIT License](LICENSE). Fear not, for the original material within these resources, including code snippets, is free for use—like the best snacks on an interstellar flight. However, do keep in mind that any copyrighted material within the notebooks is bound by the restrictions of its original copyright holders.
 
 ## Contact
 
