@@ -2,7 +2,7 @@
 Welcome, intrepid explorers of the cosmic tapestry! You are about to embark on a delightful journey through the realm of microlensing. This guide has been meticulously crafted to furnish the eager minds of budding scientists with the skills necessary to navigate the wonders of the Roman microlensing project.
 
 ## Overview
-
+[![Watch the demo](https://img.youtube.com/vi/b857l8PAllo/0.jpg)](https://www.youtube.com/watch?v=b857l8PAllo)
 
 ## Table of Contents
 - [Introduction](#introduction)
