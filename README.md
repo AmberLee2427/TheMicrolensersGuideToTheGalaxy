@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="2025_07_27_0sw_Kleki-2.png" alt="logo" width=40%>
+  <img src="Logos/2025_07_27_0sw_Kleki-2.png" alt="logo" width=40%>
 </p>
 
 # The Microlenser's Guide to the Galaxy
