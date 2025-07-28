@@ -1,4 +1,7 @@
+```python
 ######################
+# EXERCISE: BinarySourceE1.txt
+#---------------------
 # initial guess
 t01 = 6100
 t02 = 6140
@@ -10,3 +13,4 @@ tE2 = 25
 # fitting the model
 theta0 = [t01, u01, tE1, t02, u02, tE2]
 ######################
+```

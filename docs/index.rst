@@ -10,13 +10,5 @@ The Microlenser's Guide to the Galaxy
    :maxdepth: 2
    :caption: Contents:
 
-   ../Notebooks/Introduction
-   ../Notebooks/PlanetsAndBrownDwarfs
-   ../Notebooks/RemnantsAndDarkMatter
-   ../Notebooks/Eras
-   ../Notebooks/SingleLens
-   ../Notebooks/BinarySource
-   ../Notebooks/Modelling
-   ../Notebooks/MulensModelFSPLError
-   ../Notebooks/ProgressChecklist
+   Notebooks/BinarySource
 

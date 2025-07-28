@@ -1,3 +1,4 @@
+```python
 # objective function
 def binary_source_chi2(theta: np.ndarray, 
                        model1: mm.Model, 
@@ -52,6 +53,8 @@ def binary_source_chi2(theta: np.ndarray,
     A2 = model2.get_magnification(t)
 
     ######################
+    # EXERCISE: BinarySourceE1.txt
+    #---------------------
     # build the matricies for the linear algebra
     C = np.array([np.sum(A1 * flux * flux_err**-2), np.sum(A2 * flux * flux_err**-2), np.sum(flux * flux_err**-2)])
     B = np.array([[np.sum(A1**2 * flux_err**-2), np.sum(A1 * A2 * flux_err**-2), np.sum(A1 * flux_err**-2)],
@@ -99,3 +102,4 @@ flux2 = flux1 * flux_ratio
 print('\nprimary source flux used to generate the data:', flux1)
 print('secondary source flux used to generate the data:', flux2)
 print('blend flux used to generate the data:', blend_flux)
+```

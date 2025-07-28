@@ -7,3 +7,12 @@ __pycache__/
 *.DS_Store
 .ipynb_checkpoints/
 Progress/
+
+# Build files
+build/
+docs/_build/
+docs/Notebooks/
+
+# Python cache
+__pycache__/
+*.pyc

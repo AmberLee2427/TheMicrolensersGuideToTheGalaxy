@@ -1,11 +1,13 @@
+```python
 def ln_prob(theta: np.ndarray, model1, model2, data) -> float:
     """log probability"""
 
     lp = 0.0
 
     ######################
-    # Exercise 3: Implement the priors
-    # priors  ##### replace True with conditions
+    # EXERCISE: BinarySourceE3.txt
+    #---------------------
+    # priors                         # replace True with conditions
 
     # add a constraint on tEs with a 1 sig deltatE of 5 days
     lp += -(theta[2]-theta[5])**2/5**2   # this discourages the tEs from being too different
@@ -20,7 +22,9 @@ def ln_prob(theta: np.ndarray, model1, model2, data) -> float:
     else: # the proposed parameters values are reasonable
 
         ######################
-        # Exercise 7: Add a constraint (prior) on the blend flux
+        # EXERCISE: BinarySourceE7.txt
+        #---------------------
+        # Add a constraint (prior) on the blend flux
         chi2 = binary_source_chi2(theta, model1, model2, data, return_fluxes=False)
         ######################
 
@@ -30,3 +34,4 @@ def ln_prob(theta: np.ndarray, model1, model2, data) -> float:
 # starting lnL
 lnP = ln_prob(theta0, model1, model2, data)
 print('initial log probability:', lnP)
+```

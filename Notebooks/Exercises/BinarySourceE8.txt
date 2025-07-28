@@ -1,4 +1,8 @@
+PART: 1
+```python
 ######################
+# EXERCISE: BinarySourceE8.txt PART: 1
+#---------------------
 # re make the sampler  (Make sure to run the ln_prob cell after you edit it)
 sampler = emcee.EnsembleSampler(nwalkers, ndim, ln_prob, 
                                 args=[model1, model2, data])
@@ -6,23 +10,29 @@ sampler = emcee.EnsembleSampler(nwalkers, ndim, ln_prob,
 # rerun the sampler
 run_emcee(sampler, initial_pos, nsteps, steps_between_plot_updates, nwalkers, ndim)
 ######################
+```
 
 
-
-
+PART: 2
+```python
 ######################
+# EXERCISE: BinarySourceE8.txt PART: 2
+#---------------------
 # corner plot
 plot_corner(final_state, model1, model2, data)
 ######################
+```
 
 
-
-
+PART: 3
+```python
 # Plot the lightcurve
 plt.close(8)
 plt.figure(8)
 
 ######################
+# EXERCISE: BinarySourceE8.txt PART: 3
+#---------------------
 # Your code goes here
 
 # Plot the data
@@ -107,3 +117,4 @@ plt.xlabel('HJD (days)')
 ######################
 
 plt.show()
+```
