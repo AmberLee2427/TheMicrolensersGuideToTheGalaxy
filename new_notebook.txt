@@ -349,18 +349,14 @@ def ln_prob(theta: np.ndarray, model1, model2, data) -> float:
 
         ######################
         # EXERCISE: BinarySourceE7.txt
-    #---------------------
-    # priors                         # replace True with conditions
-
-    # add a constraint on tEs with a 1 sig deltatE of 5 days
-    lp += -(theta[2]-theta[5])**2/5**2   # this discourages the tEs from being too different
-
-    if np.any(np.array(theta) < 0) or theta[0] > theta[3] or theta[0] < 6000 or theta[3] < 6000 or theta[0] > 6300 or theta[3] > 6300:
-        return -1e16
-    
-    elif (theta[2]-theta[5])**2 > 20**2:  # max 20 days difference
-        return -1e16
-    ######################
+        #---------------------
+        #chi2 = binary_source_chi2(theta, model1, model2, data, return_fluxes=False)
+        chi2, FS1, FS2, FB = binary_source_chi2(theta, model1, model2, data, return_fluxes=True)
+        
+        # implement a prior demanding positive fluxes
+        if FS1 < 0 or FS2 < 0 or FB < 0:
+            lp = -1e16
+        ######################
 
         # return the log probability
         return -0.5 * chi2 + lp
@@ -780,11 +776,7 @@ plt.show()
 
 ```markdown
 <!-- EXERCISE: BinarySourceE9.txt -->
-Depnding on the priors you chose and the random errors you generated, you may find 
-that u02, tE2, or both are very poorly contrained; this would look like a large spread
-in the chains for those parameters. You could consider a prior that links the tE values
-to something similar to each other. But we may also decide to apply a prior constraint
-on the blend flux, which we reasonable know should not be negative for simulated data.
+Any parameters that show diagonal samples in the 2D posteriors of the corner plot.
 <!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->
 ```
 

@@ -1,10 +1,10 @@
+```python
 plt.close(5)
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), num=5)
 
 ######################
-# your code goes here
-
-# Exercise 5
+# EXERCISE: PlanetsE5.txt
+#---------------------
 # Plot BD_df['m_MJ'] vs BD_df['year'] on the first axis (ax1)
 # Set alpha (transparency) based on BD_df['P'] to indicate degenerate solutions
 ax1.scatter(BD_df['year'], BD_df['m_MJ'], alpha=BD_df['P'], c='grey')
@@ -12,9 +12,11 @@ ax1.scatter(BD_df['year'], BD_df['m_MJ'], alpha=BD_df['P'], c='grey')
 # Plot BD_df['m_MJ'] vs BD_df['year'] on the first axis (ax1)
 # Set alpha (transparency) based on BD_df['P'] to indicate degenerate solutions
 ax2.scatter(BD_df['year'], BD_df['q'], alpha=BD_df['P'], c='grey')
+######################
 
-# Exercise 6
-
+######################
+# EXERCISE: PlanetsE6.txt
+#---------------------
 # select the kinematic group from BD_df using the eventid column
 kinematic_group = ['MOA-2016-BLG-231', 'OGLE-2016-BLG-1195', 'OGLE-2017-BLG-0896', 'OGLE-2017-BLG-1038']
 BD_kinematic_df = BD_df[BD_df['eventID'].isin(kinematic_group)]
@@ -47,3 +49,4 @@ ax2.set_ylabel('Mass ratio ($q$)')
 plt.tight_layout()
 
 plt.show()
+```

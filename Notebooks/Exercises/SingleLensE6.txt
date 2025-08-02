@@ -1,3 +1,4 @@
+```python
 # Finite source
 rho = 0.1  # source radius in units of theta_E
 rho_index = int(1000/4) # for adjusting the location of the source markers in the trajectory plot
@@ -61,13 +62,13 @@ for i in trajectories_df.index:
     for i, parameter in enumerate(parameters_to_fit):
         setattr(fspl.parameters, parameter, Theta[i])  
     
+    ######################
+    # EXERCISE: SingleLensE6.txt
+    #--------------------- 
     # Magnification curve array
-    ######################
     A = fspl.get_magnification(t)
-    ######################
 
     # Plot lightcurves (technically, manification curves)
-    ######################
     ax[1].plot(tt, np.log10(A), marker='', ls='-', c=trajectory['color'], 
                label=r'$u_0=%1.2f$' %trajectory['u0'])
     ######################
@@ -101,3 +102,4 @@ ax[1].set_xlim(xlims[0],xlims[1])
 
 # Save
 #plt.savefig('/Products/single_trajectories_FS.png', bbox_inches='tight')  # 'tight' removes outer padding
+```

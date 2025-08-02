@@ -1,6 +1,9 @@
+```python
 # Numerical integration for the mass inside 50 kpc.
+
 ######################
-# Your code goes here
+# EXERCISE: RemnantsE2.txt
+#---------------------
 r_max = 50.0  # kpc
 
 # Integrate density * r^2 from 0 to r_max.
@@ -17,3 +20,4 @@ mass_integral, error = quad(lambda r: nfw_density(r,
 M_total = 4 * np.pi * mass_integral
 print(f"Total dark matter mass enclosed within {r_max} kpc for a c=10 NFW profile: {M_total:.2e} M_sun")
 ######################
+```

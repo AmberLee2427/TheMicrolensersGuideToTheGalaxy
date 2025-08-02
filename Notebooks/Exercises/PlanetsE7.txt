@@ -1,9 +1,10 @@
+```python
 plt.close(8)
 plt.figure(num=8, figsize=(7, 5))
 
 ######################
-# Your code goes here
-
+# EXERCISE: PlanetsE7.txt
+#---------------------
 # Fetch data from the ML table in NASA Exoplanet Archive using astroquery
 query = NasaExoplanetArchive.query_criteria(table="ML", select="ml_massratio,ml_modeldef")
 # Filter for entries with ml_modeldef = 1
@@ -67,3 +68,4 @@ plt.axvline(np.log10(0.14),
 plt.xlabel(r'$\log_{10}$ Mass Ratio')
 plt.ylabel('Normalised Density')
 plt.legend()
+```

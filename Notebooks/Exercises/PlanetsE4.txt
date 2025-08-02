@@ -1,3 +1,4 @@
+```python
 BD_SL_df = pd.read_csv('Data/Events/BD/BDSL.csv', header=0, skipinitialspace=True)  # brown dwarf single lens
 BD_BLhost_df = pd.read_csv('Data/Events/BD/BDhost.csv', header=0, skipinitialspace=True)  # brown dwarf hosts, any companion 
 BD_BLcomp_df = pd.read_csv('Data/Events/BD/BDcomp.csv', header=0, skipinitialspace=True)  # stellar hosts
@@ -8,6 +9,8 @@ BD_BLhost_df.rename(columns={'# q': 'q'}, inplace=True)
 BD_BLcomp_df.rename(columns={'# q': 'q'}, inplace=True)
 
 ######################
+# EXERCISE: PlanetsE4.txt
+#---------------------
 # select the brown dwarfs
 
 # ignore warnings from pandas
@@ -50,7 +53,6 @@ BD_host_comp['m_MJ'] = BD_host_comp['m2_MJ']
 BD_df = pd.concat([BD_df, BD_host_comp[['q', 'm_MJ', 'P', 'theta_E_uas', 'eventID']]], ignore_index=True)
 
 print('BD count (SL+comp+host):', np.sum(BD_df['P']))
-
 ######################
 
 # Plotting
@@ -73,3 +75,4 @@ plt.xlabel('Mass ($M_J$)')
 plt.ylabel('Probability Density')
 
 plt.show()
+```

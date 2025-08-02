@@ -1,3 +1,4 @@
+```python
 aladin.target = "269.0 -28.0"
 
 # Create a table with a hacky Superstamp outline
@@ -14,10 +15,10 @@ for (ra1, dec1), (ra2, dec2) in zip(zip(ss_ra, ss_dec), zip(ss_ra[1:], ss_dec[1:
 # Add it to Aladin
 aladin.add_table(ss_outline, color='yellow', shape='cross')
 
-#############
-#Your code goes here
-
+######################
+# EXERCISE: ErasE2.txt
+#---------------------
 # Add the K2 targets to the Aladin view
 aladin.add_table(tap_records.to_table(), color="red", shape="plus")
-
-#############
+######################
+```

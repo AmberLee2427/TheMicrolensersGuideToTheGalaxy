@@ -1,9 +1,9 @@
 ```markdown
 <!-- EXERCISE: BinarySourceE6.txt -->
-Depnding on the priors you chose and the random errors you generated, you may find 
-that u02, tE2, or both are very poorly contrained; this would look like a large spread
-in the chains for those parameters. You could consider a prior that links the tE values
-to something similar to each other. But we may also decide to apply a prior constraint
-on the blend flux, which we reasonable know should not be negative for simulated data.
+> Depnding on the priors you chose and the random errors you generated, you may find 
+> that u02, tE2, or both are very poorly contrained; this would look like a large spread
+> in the chains for those parameters. You could consider a prior that links the tE values
+> to something similar to each other. But we may also decide to apply a prior constraint
+> on the blend flux, which we reasonable know should not be negative for simulated data.
 <!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->
 ```

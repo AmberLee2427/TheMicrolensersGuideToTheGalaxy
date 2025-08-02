@@ -1,4 +1,8 @@
+PART 1:
+```python
 ######################
+# EXERCISE: SingleLensE1.txt PART: 1a
+#--------------------- 
 # E7.1 Write your model fitting code here
 
 # Nelder-Mead
@@ -107,16 +111,20 @@ plt.ylabel('Frequency')
 plt.title('Posterior distribution of rho')
 plt.show()
 ######################
+```
 
+```markdown
+<!-- EXERCISE: SingleLensE1.txt PART: 1b -->
+> No. Rho is unconstrained; the uncertainty recovers the bounds with Nelder-Mead 
+> and the posterior is flat with MCMC.
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->
+```
+
+PART 2:
+```python
 ######################
-# Write you answer for E7.1 here
-
-No. Rho is unconstrained; the uncertainty recovers the bounds with Nelder-Mead and the posterior is flat with MCMC.
-######################
-
-######################
-# E7.2 Do your working here
-
+# EXERCISE: SingleLensE1.txt PART: 2
+#--------------------- 
 plt.close(13)
 plt.figure(13)
 
@@ -138,18 +146,32 @@ plt.ylim(12.5, 10)
 plt.xlim(7750,8000)
 plt.show()
 ######################
+```
 
-
-######################
-# Write you answer for E7.3 here
-
-It does not make sense for the relative probability to decrease (i.e., for the best-fit finite-source model to be less probable than the initial guess) because the finite-source point-lens (FSPL) model is a generalization of the point-source point-lens (PSPL) model. Specifically, the PSPL model is simply the special case of the FSPL model where the source size parameter, ρ, approaches zero.
-When fitting the data with the FSPL model, the optimizer is free to choose any value of ρ, including values very close to zero. Therefore, the FSPL fit should always be able to recover the PSPL solution by setting ρ ≈ 0. This means that the best-fit FSPL model should have a chi-squared value that is at least as good as (and typically equal to or better than) the PSPL fit.
-If your relative probability decreases (i.e., the best-fit FSPL model has a higher chi-squared than the PSPL model), it usually means that the fit did not converge properly, or that the optimizer was stuck at a suboptimal value of ρ (for example, if you started with a random, nonzero ρ and the fit did not move it close to zero). In a properly performed fit, the FSPL model should never be worse than the PSPL model, because it includes the PSPL as a limiting case.
-
-**Summary:**
-
-* The FSPL model can always reproduce the PSPL result by setting ρ very close to zero.
-* The best-fit FSPL model should never be less probable than the PSPL model.
-* A decrease in relative probability indicates a problem with the fit, not with the models themselves.
-######################
+PART 3:
+```markdown
+<!-- EXERCISE: SingleLensE1.txt PART: 3 -->
+> It does not make sense for the relative probability to decrease (i.e., for the 
+> best-fit finite-source model to be less probable than the initial guess) because 
+> the finite-source point-lens (FSPL) model is a generalization of the point-source 
+> point-lens (PSPL) model. Specifically, the PSPL model is simply the special case 
+> of the FSPL model where the source size parameter, ρ, approaches zero.
+> When fitting the data with the FSPL model, the optimizer is free to choose any 
+> value of ρ, including values very close to zero. Therefore, the FSPL fit should 
+> always be able to recover the PSPL solution by setting ρ ≈ 0. This means that 
+> the best-fit FSPL model should have a chi-squared value that is at least as good 
+> as (and typically equal to or better than) the PSPL fit.
+> If your relative probability decreases (i.e., the best-fit FSPL model has a higher 
+> chi-squared than the PSPL model), it usually means that the fit did not converge 
+> properly, or that the optimizer was stuck at a suboptimal value of ρ (for example, 
+> if you started with a random, nonzero ρ and the fit did not move it close to zero). 
+> In a properly performed fit, the FSPL model should never be worse than the PSPL 
+> model, because it includes the PSPL as a limiting case.
+>
+> **Summary:**
+>
+> * The FSPL model can always reproduce the PSPL result by setting ρ very close to zero.
+> * The best-fit FSPL model should never be less probable than the PSPL model.
+> * A decrease in relative probability indicates a problem with the fit, not with the models themselves.
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->
+```

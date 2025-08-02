@@ -1,4 +1,7 @@
+```python
 ######################
+# EXERCISE: SingleLensE2.txt
+#---------------------
 # Initial guess
 u0 = 0.7
 t0 = 7889
@@ -26,3 +29,4 @@ plt.title('Single Lens Generated Lightcurve')
 plt.xlim(7750, 8000)
 plt.legend()
 plt.show()
+```

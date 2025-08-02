@@ -1,3 +1,4 @@
+```python
 # K2-C9 Footprint 
 # like https://keplergo.github.io/KeplerScienceWebsite/images/k2/k2-c09-field.png, 
 # from https://keplergo.github.io/KeplerScienceWebsite/k2-fields.html
@@ -43,7 +44,8 @@ else:
     print("No valid Simbad results found.")
 
 ######################
-# Your code goes here
+# EXERCISE: ErasE3.txt
+#---------------------
 # Extract RA and Dec for plotting (convert to floats, ignoring None values)
 simbad_ra = np.array([float(row["ra"]) for row in combined_table if row["ra"] is not None])
 simbad_dec = np.array([float(row["dec"]) for row in combined_table if row["dec"] is not None])
@@ -84,3 +86,4 @@ plt.ylabel('Dec')
 plt.xlabel('RA')
 ax.set_aspect('equal')
 plt.show()
+```

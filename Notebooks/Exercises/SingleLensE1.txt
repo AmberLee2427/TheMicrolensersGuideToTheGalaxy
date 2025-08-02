@@ -1,3 +1,4 @@
+```python
 def SL_magnification(u0:float, t0:float, tE:float, t:np.ndarray) -> np.ndarray:
     '''Builds a model magnification curve.
     
@@ -10,11 +11,15 @@ def SL_magnification(u0:float, t0:float, tE:float, t:np.ndarray) -> np.ndarray:
     tE : float
         The Einstein crossing time.
     t : numpy.ndarray
-        The epochs (data or reference).'''
-    ######################  
+        The epochs (data or reference).
+    '''
+    ######################
+    # EXERCISE: SingleLensE1.txt
+    #--------------------- 
     tau = (t-t0)/tE
     u = (tau**2 + u0**2)**(1/2)
     A = (u**2 + 2) / (u*(u**2+4)**(1/2))
     ######################
 
     return A
+```

@@ -54,9 +54,6 @@ def replace_solutions(
     with open("old_notebook.txt", 'r') as f:
         notebook = f.read()
 
-    # print the first 100 characters of the old notebook
-    print(old_notebook[:100])
-
     # Look for the indeicative solution marker
     # Pattern: (######################\n# EXERCISE: (.*?)(?: PART: (\d+))?\n)(.*?)(\n######################)
     #      or: ((<!-- EXERCISE: (.*?)(?: PART: (\d+))? -->)(.*?)(<!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->)

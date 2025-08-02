@@ -1,3 +1,4 @@
+```python
 import matplotlib.image as mpimg
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 
@@ -48,6 +49,8 @@ plt.ylabel(r'Mass ($M_\oplus$)')
 plt.legend(loc='lower right')
 
 ######################
+# EXERCISE: PlanetsE1.txt
+#---------------------
 # Planet table values
 Mercury_loc = (0.387, 0.055)
 Venus_loc = (0.723, 0.815)
@@ -107,3 +110,4 @@ print(np.log10(Mercury_loc), np.log10(Venus_loc), np.log10(Earth_loc), np.log10(
 plt.show()
 
 plt.savefig('exoplanet_plot.png', dpi=300)
+```

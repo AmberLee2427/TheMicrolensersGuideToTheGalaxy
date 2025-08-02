@@ -1,3 +1,4 @@
+```python
 def MfromthetaE(theta_E: Union[np.ndarray, float], DL: Union[np.ndarray, float], 
                 DS: Union[np.ndarray, float] = 8.0) -> Union[np.ndarray, float]:
     """
@@ -80,7 +81,8 @@ plot_y_DF = plot_y_J*75.0
 plot_y_E = plot_y_J*0.00314558
 
 ######################
-# your code goes here
+# EXERCISE: PlanetsE3.txt
+#---------------------
 # y vales
 M_9 = MfromthetaE(9.,D_L,DS=8)
 M_25 = MfromthetaE(25.,D_L,DS=8)
@@ -119,3 +121,4 @@ plt.xlim((xmin, xmax))
 plt.ylim((10**-4, 10**3))
 plt.legend(loc='lower right')
 plt.show()
+```

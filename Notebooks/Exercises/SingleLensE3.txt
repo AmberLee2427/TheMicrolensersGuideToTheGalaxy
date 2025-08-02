@@ -1,3 +1,4 @@
+```python
 def chi2(
          p: List[float], 
          t: np.ndarray, 
@@ -24,8 +25,9 @@ def chi2(
     chi2 : float
         Chi squared value.
     '''
-
     ######################
+    # EXERCISE: SingleLensE3.txt
+    #--------------------- 
     sig2 = sig**2
     model = SL_magnification(p[0], p[1], p[2], t)
     FS, FB = calc_Fs(model, f, sig2)
@@ -33,3 +35,4 @@ def chi2(
     ######################
 
     return chi2_value
+```

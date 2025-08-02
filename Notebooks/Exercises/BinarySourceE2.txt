@@ -1,6 +1,6 @@
 ```python
 ######################
-# EXERCISE: BinarySourceE1.txt
+# EXERCISE: BinarySourceE2.txt
 #---------------------
 # initial guess
 t01 = 6100

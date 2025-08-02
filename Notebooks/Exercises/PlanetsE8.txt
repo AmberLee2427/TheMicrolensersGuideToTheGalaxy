@@ -1,3 +1,4 @@
+```python
 plt.close(9)
 plt.figure(num=9, figsize=(7, 5))
 
@@ -40,7 +41,8 @@ x = y * 0. + 90.0
 plt.plot(x, y, 'k-', alpha=0.1)
 
 ######################
-# Your code goes here
+# EXERCISE: PlanetsE8.txt
+#---------------------
 x = np.linspace(0.1, 1400., 1400)
 y = x * 0.022
 plt.plot(x, y,'k:', label=r'$q=0.022$', lw=0.2)
@@ -60,3 +62,4 @@ plt.xscale('log')
 plt.legend(loc='upper left')
 
 plt.show()
+```

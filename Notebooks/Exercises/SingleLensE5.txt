@@ -1,6 +1,7 @@
-
+```python
 ######################
-# Your code here
+# EXERCISE: SingleLensE5.txt
+#--------------------- 
 # Fitting a point-source 1S1L model to OB170002
 
 # new objective function
@@ -138,3 +139,4 @@ plt.ylim(20, 16)
 plt.legend()
 plt.show()
 ######################
+```

@@ -1,5 +1,8 @@
-#################
-# Your code goes here
+```python
+######################
+# EXERCISE: ErasE1.txt
+#---------------------
 tap_records = tap_service.search(f'select * from "{first_table_name}"')
 tap_table = tap_records.to_table()
-#################
+######################
+```

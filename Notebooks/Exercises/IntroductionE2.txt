@@ -1,3 +1,4 @@
+```python
 colours = ['red', 'green', 'blue', 'orange']
 
 M = 1.0  # M_sun
@@ -12,6 +13,8 @@ plt.figure(num=2, figsize=(8, 5))  # Create a new figure
 plt.plot(Ds, theta_E_values, color=colours[0], label=r'$M_L=1.000M_\odot$, $D_L=1$ kpc')
 
 ######################
+# EXERCISE: IntroductionE2.txt
+#---------------------
 MM = [0.1, 0.01, 0.001] # ~M_star cutoff, ~M_BD cutoff, ~M_J
 
 for i, M in enumerate(MM):
@@ -46,3 +49,4 @@ plt.xlabel(r'Source Distance, $D_{\rm{S}}$ (kpc)')
 plt.ylabel(r'Angular Einstein Radius, $\theta_{\rm{E}}$ (mas)')
 plt.legend(loc='lower left', ncol=3, fontsize='small')
 plt.show()
+```

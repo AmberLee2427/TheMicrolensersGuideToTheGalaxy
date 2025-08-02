@@ -1,8 +1,10 @@
+```python
 plt.close(3)
 plt.figure(num=3, figsize=(9, 5))
 
 ######################
-# Your code goes here
+# EXERCISE: IntroductionE3.txt
+#---------------------
 
 colours = ['red', 'green', 'blue', 'orange']
 format = ['-', '--', ':']
@@ -33,3 +35,4 @@ plt.legend(loc='upper left', ncol=3, fontsize='small')
 ######################
 
 plt.show()
+```
