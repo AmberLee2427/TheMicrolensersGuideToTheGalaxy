@@ -1,0 +1,13 @@
+```python
+    ######################
+    # EXERCISE: RemnantsE3.txt
+    #---------------------
+    # FFPs (0.0001 - 0.02 Msun) Sumi+23
+    #- Slope α = 0.96 ± 0.27 for M < 0.02 Msun (Sumi23)
+    #- Normalization Z = 2.18 ± 1.40 at 8 M⊕
+    ffp_masses = sample_powerlaw(0.0001, 0.02, gamma=0.96, size=int(2.18 * size))
+    
+    # Brown dwarfs (0.02 - 0.08 Msun)
+    bd_masses = sample_powerlaw(0.02, 0.08, gamma=0.7, size=int(0.28 * size))  # 28% from Chabrier
+    ######################
+```

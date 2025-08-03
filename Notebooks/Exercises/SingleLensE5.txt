@@ -1,6 +1,63 @@
+PARTS 1 & 2:
+```python
+# Visualizing the data
+plt.close(4)
+plt.figure(figsize=(9,6), num=4)
+colors = ('purple', 'violet', 'plum', 'thistle')
+
+######################
+# EXERCISE: SingleLensE5.txt PART: 1
+#--------------------- 
+# change this to True to remove data with large errors
+mask_large_errors = True
+######################
+
+for i, key in enumerate(data.keys()):
+
+    if key == 'OGLE':
+        zp = 28
+    else:
+        zp = 28.65
+    mag = flux2mag(data[key][1], zp=zp)
+    mag_err = flux2mag_err(data[key][1], data[key][2])
+    t = data[key][0]
+
+    # Remove data with large errors
+    if mask_large_errors:
+        error_mask = mag_err < 0.1
+    else:
+        error_mask = [True] * len(mag)
+
+    plt.errorbar(
+                t[error_mask], 
+                mag[error_mask], 
+                yerr=mag_err[error_mask], 
+                fmt='x', 
+                color=colors[i], 
+                label=key
+                )
+
+######################
+# EXERCISE: SingleLensE5.txt PART: 2
+#--------------------- 
+# change this to your guess for t_0
+t_0_guess = 7780
+plt.vlines(t_0_guess, 16, 20, color='black', linestyle='--', label='t_0')
+######################
+
+plt.xlabel('HJD - 2450000')
+plt.ylabel('Magnitude (zp = 28)')
+plt.title('OB170002')
+plt.xlim(7750, 8000)
+plt.ylim(20, 16)
+plt.legend()
+plt.show()
+```
+
+PART 3:
 ```python
 ######################
-# EXERCISE: SingleLensE5.txt
+# EXERCISE: SingleLensE5.txt PART: 3
 #--------------------- 
 # Fitting a point-source 1S1L model to OB170002
 
