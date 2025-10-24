@@ -1,0 +1,8 @@
+```python
+######################
+# EXERCISE: PlanetsE4.txt
+#---------------------
+# Select the brown dwarfs
+BD_df = pd.DataFrame()
+######################
+```

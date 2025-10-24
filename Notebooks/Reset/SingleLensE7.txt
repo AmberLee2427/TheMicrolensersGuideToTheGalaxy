@@ -1,0 +1,27 @@
+```python
+######################
+# EXERCISE: SingleLensE7.txt PART: 1a
+#--------------------- 
+# Write your model fitting code here
+######################
+```
+
+```markdown
+<!-- EXERCISE: SingleLensE7.txt PART: 1b -->
+> *Write you answer here...*
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->
+```
+
+```python
+######################
+# EXERCISE: SingleLensE7.txt PART: 2
+#--------------------- 
+# Do your working here
+######################
+```
+
+```markdown
+<!-- EXERCISE: SingleLensE7.txt PART: 3 -->
+> *Write you answer here...*
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->
+```

@@ -1,0 +1,16 @@
+```python
+######################
+# EXERCISE: PlanetsEX.txt
+#---------------------
+# BD histogram
+'''
+plt.hist(DL, 
+         bins=bins, 
+         color='grey', 
+         edgecolor='black', 
+         alpha=0.3, 
+         density=True, 
+         label='BD Solutions', 
+         weights=weights) #'''
+######################
+```

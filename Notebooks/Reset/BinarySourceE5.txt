@@ -1,0 +1,8 @@
+```python
+######################
+# EXERCISE: BinarySourceE5.txt
+#----------------------
+# Initialize the walkers
+initial_pos = 0
+######################
+```

@@ -1,0 +1,8 @@
+```python
+        ######################
+        # EXERCISE: BinarySourceE7.txt
+        #----------------------
+        # Add a constraint (prior) on the blend flux
+        chi2 = binary_source_chi2(theta, model1, model2, data, return_fluxes=False)
+        ######################
+```

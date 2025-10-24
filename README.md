@@ -12,6 +12,7 @@ Welcome, intrepid explorers of the cosmic tapestry! You are about to embark on a
 - [Introduction](#introduction)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Developer Workflow](#developer-workflow)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact](#contact)
@@ -72,6 +73,16 @@ Some of the more specialised notebooks in this guide have further install requir
 
 Open the Jupyter notebooks nestled within the `Notebooks` directory, where each document brims with exercises and illuminating examples. Follow the instructions inside your [`Introduction.ipynb`](Notebooks/Introduction.ipynb) ([GitHub link](https://github.com/AmberLee2427/TheMicrolensersGuideToTheGalaxy/blob/main/Notebooks/Introduction.ipynb)) notebook and prepare to explore the captivating concepts of microlensing with all the enthusiasm of a seasoned hitchhiker. 
 
+## Developer Workflow
+
+- **Reference directories** live under `Notebooks/Exercises/` (solved example blocks) and `Notebooks/Reset/` (blank learner prompts). Keep both in sync when you touch an exercise.
+- **Generate solved notebooks for testing** with `python replacement.py Notebooks/<Notebook>.ipynb build/<Notebook>_solved.ipynb --keep`. Omitting the third argument defaults to `Notebooks/Exercises/`, so the solved blocks are injected automatically.
+- **Restore the learner view before committing** using the reset prompts: `python replacement.py build/<Notebook>_solved.ipynb Notebooks/<Notebook>.ipynb Notebooks/Reset --keep`. This swaps the solved content back to the blank placeholders.
+- **Refresh the reference blocks** after editing exercises:  
+  `python solutions.py Notebooks/<Notebook>.ipynb Notebooks/Exercises --force` (for solved answers) and  
+  `python solutions.py Notebooks/<Notebook>_blank.ipynb Notebooks/Reset --force` if you adjust the learner prompt itself. The `--force` flag lets the script overwrite its temporary export without manual prompts.
+- **Verify changes** by running `pytest` and, if relevant, rebuilding docs via `python build.py` to ensure notebooks still execute end-to-end.
+
 ## Contributing
 
 Your contributions are the hydrogen that makes this project shine brighter! If you wish to become an Author and enhance these resources—whether through bug fixes, clever improvements, or new exercises—please don’t hesitate to contact the project author at malpas.1@osu.edu. Every bit of input is appreciated.
@@ -80,9 +91,8 @@ Your contributions are the hydrogen that makes this project shine brighter! If y
 - Amber Malpas
 - Katarzyna Kruszynska
 - Alison Crisp
+- Arjun Murlidhar
 - Samson Johnson
-- B. Scott Gaudi (TBD)
-- Michael Albrow (TBD)
 
 ## License
 
@@ -97,4 +107,3 @@ Should questions or inquiries cross your mind or terminal, feel free to reach ou
 - **GitHub:** [AmberLee2427](https://github.com/AmberLee2427)
 
 So raise you thumb, grab your towel, and prepare for an enlightening expedition into the universe of microlensing!
-

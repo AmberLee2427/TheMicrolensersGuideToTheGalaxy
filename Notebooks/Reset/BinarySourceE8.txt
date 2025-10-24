@@ -1,0 +1,26 @@
+```python
+######################
+# EXERCISE: BinarySourceE8.txt PART: 1
+#----------------------
+# re make the sampler  (Make sure to run the ln_prob cell after you edit it)
+
+
+# rerun the sampler
+######################
+```
+
+```python
+######################
+# EXERCISE: BinarySourceE8.txt PART: 2
+#----------------------
+# corner plot
+######################
+```
+
+```python
+######################
+# EXERCISE: BinarySourceE8.txt PART: 3
+#----------------------
+# Your code goes here
+######################
+```

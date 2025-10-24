@@ -1,0 +1,12 @@
+```python
+    ######################
+    # EXERCISE: RemnantsE3.txt
+    #---------------------
+    # FFPs (0.0001 - 0.013 Msun) Coleman+25
+    # High-mass power-law (M > 8 M⊕): dN/dlogM ∝ M^-1.18
+    ffp_masses = sample_powerlaw(0.0001, 0.013, gamma=1.18, size=int(0.63 * size))  # 63% from Coleman+25
+    
+    # Brown dwarfs (0.013 - 0.08 Msun)
+    bd_masses = sample_powerlaw(0.013, 0.08, gamma=0.7, size=int(0.28 * size))  # 28% from Chabrier
+    ######################
+```

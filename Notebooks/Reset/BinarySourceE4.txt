@@ -1,0 +1,10 @@
+```python
+######################
+# EXERCISE: BinarySourceE4.txt
+#----------------------
+# Replace these with your values
+nwalkers = 0
+ndim = 0
+steps_between_plot_updates = 0
+######################
+```

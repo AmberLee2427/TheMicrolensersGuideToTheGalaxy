@@ -1,0 +1,7 @@
+```python
+######################
+# EXERCISE: SingleLensE4.txt
+#--------------------- 
+# Do your calculation here
+######################
+```

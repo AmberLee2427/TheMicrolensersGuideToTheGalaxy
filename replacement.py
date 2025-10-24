@@ -60,16 +60,16 @@ def replace_solutions(
     #           begin_marker, solution_file_name, (optional) part_number, content, end_marker
 
     code_pattern = (
-        r".*?(######################.*?"       # ".*?" in case of tabs and rogue
-        r"EXERCISE: (.*?)(?: PART: (\d+))?\n"  # spaces
-        r".*?"                                 # <-- the actual solution content
-        r"######################)"             # everything wrap in "(", ")" to 
-    )                                          # catch the entire block
+        r".*?(######################.*?"        # ".*?" in case of tabs and rogue
+        r"EXERCISE: (.*?)(?: PART: ([^\n]+))?\n"  # spaces
+        r".*?"                                  # <-- the actual solution content
+        r"######################)"              # everything wrap in "(", ")" to 
+    )                                           # catch the entire block
 
     markdown_pattern = (
-        r"(<!-- EXERCISE: (.*?)(?: PART: (\d+))? -->"  # shouldn't be indented
-        r".*?"                                 # <-- the actual solution content
-        r"<!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->)"   # shouldn't be indented
+        r"(<!-- EXERCISE: (.*?)(?: PART: ([^\n]+))? -->"  # shouldn't be indented
+        r".*?"                                  # <-- the actual solution content
+        r"<!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->)"    # shouldn't be indented
     )
 
     # The "EXERCISE: * PART: *" must be unique for the replacement to work

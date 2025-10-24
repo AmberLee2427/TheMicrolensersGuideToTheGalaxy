@@ -1,217 +1,203 @@
-""" 
-This script automates the process of creating solutions for the exercises in the 
-notebook.
+"""
+Create or refresh solution reference files from a fully solved notebook.
+
+The script walks through the exercise markers in a notebook (either the
+`.ipynb` source or an intermediate `.txt` export), captures each solution
+block, and writes the corresponding fenced content into the files under
+`Notebooks/Exercises`. It honours both code and markdown exercises, and
+supports multipart exercises with alphanumeric part labels (e.g. `PART: 1a`).
 """
 
-import os
-import sys
+from __future__ import annotations
+
+import argparse
+from collections import OrderedDict
+from pathlib import Path
 import re
+import sys
+from typing import Dict, List, Tuple
+
 import nb4llm
 
-def get_solution_content(text_file : str) -> str:
+# Matches code exercise blocks, preserving leading indentation and the separator line.
+CODE_PATTERN = re.compile(
+    r"(?P<indent>[ \t]*)######################\n"
+    r"(?P=indent)# EXERCISE: (?P<filename>.*?)(?: PART: (?P<part>[^\n]+))?\n"
+    r"(?P=indent)(?P<separator>#-+[^\n]*)\n"
+    r"(?P<content>.*?)(?:\r?\n)?(?P=indent)######################",
+    re.DOTALL,
+)
+
+# Matches markdown exercise blocks.
+MD_PATTERN = re.compile(
+    r"<!-- EXERCISE: (?P<filename>.*?)(?: PART: (?P<part>[^\n]+))? -->\n"
+    r"(?P<content>.*?)"
+    r"<!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->",
+    re.DOTALL,
+)
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Extract solved exercises from a notebook into reference files."
+    )
+    parser.add_argument("notebook", help="Path to the solved notebook (.ipynb or .txt).")
+    parser.add_argument("output_dir", help="Directory where solution files are written.")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Overwrite the temporary txt export if it already exists.",
+    )
+    return parser.parse_args()
+
+
+def get_text_notebook_path(notebook_path: Path, force: bool) -> Tuple[Path, bool]:
     """
-    Get the content of the solution for the notebook.
+    Return a path to a txt representation of the notebook.
+
+    For `.ipynb` inputs we emit a sibling file named `<stem>.__solutions_tmp__.txt`.
+    When the file already exists the caller can opt into overwriting it with
+    `--force`.
     """
-    # make a txt version of the old notebook using nb4llm if old_notebook is a notebook
+    if notebook_path.suffix.lower() == ".ipynb":
+        temp_txt = notebook_path.with_name(f"{notebook_path.stem}.__solutions_tmp__.txt")
+        if temp_txt.exists():
+            if force:
+                temp_txt.unlink()
+            else:
+                raise FileExistsError(
+                    f"Temporary txt notebook {temp_txt} already exists. "
+                    "Re-run with --force to overwrite it."
+                )
+        nb4llm.convert_ipynb_to_txt(str(notebook_path), str(temp_txt))
+        return temp_txt, True
 
-    code_pattern = r"######################.*?EXERCISE: (.*?)(?: PART: (\d+))?\n(.*?)######################"
-    md_pattern = r"<!-- EXERCISE: (.*?)(?: PART: (\d+))? -->(.*?)<!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->"
+    if notebook_path.suffix.lower() == ".txt":
+        return notebook_path, False
 
-    code_matches = re.findall(code_pattern, text_file, re.DOTALL)
-    md_matches = re.findall(md_pattern, text_file, re.DOTALL)
+    raise ValueError("Notebook must be a .ipynb or .txt file.")
 
-    return code_matches, md_matches
 
-def format_code_content(content : str, filename : str, part_number : str) -> tuple[str, str]:
+def extract_solution_blocks(notebook_text: str) -> "OrderedDict[str, List[Dict[str, str]]]":
     """
-    Format the code content for the solution files.
-
-    Args:
-        content: The content of the code exercise
-        filename: The filename of the exercise
-        part_number: The part number of the exercise
-    
-    Returns:
-        file_content: The formatted content for the solution file
-        comment_open: The regex key to check for existing solutions
+    Scan the notebook text for exercise blocks and group them by filename.
     """
-    fence_open = "```python\n"
-    fence_close = "```\n"
+    matches: List[Tuple[int, str, re.Match[str]]] = []
+    matches.extend((m.start(), "code", m) for m in CODE_PATTERN.finditer(notebook_text))
+    matches.extend((m.start(), "markdown", m) for m in MD_PATTERN.finditer(notebook_text))
+    matches.sort(key=lambda item: item[0])
 
-    # determine the tab level of the code by counting the number of spaces at the beginning of the first line
-    tab_level = content.split("\n")[0].count(" ")
-    indent_string = " " * tab_level
+    solutions: "OrderedDict[str, List[Dict[str, str]]]" = OrderedDict()
+    for _, block_type, match in matches:
+        filename = match.group("filename").strip()
+        part = match.group("part")
+        part = part.strip() if part else None
 
-    part_string = f" PART: {part_number}" if part_number else ""
+        if filename not in solutions:
+            solutions[filename] = []
 
-    comment_open = f"{indent_string}######################\n{indent_string}# EXERCISE: {filename}{part_string}\n"
-    comment_close = "######################\n"
-
-    content_payload = f"{comment_open}{content}{comment_close}"
-
-    file_content = f"{fence_open}{content_payload}{fence_close}"
-
-    return file_content, comment_open
-
-def format_md_content(content : str, filename : str, part_number : str) -> tuple[str, str]:
-    """
-    Format the markdown content for the solution files.
-
-    Args:
-        content: The content of the markdown exercise
-        filename: The filename of the exercise
-        part_number: The part number of the exercise
-
-    Returns:
-        file_content: The formatted content for the solution file
-        comment_block_open: The regex key to check for existing solutions
-    """
-    fence_open = "```markdown\n"
-    fence_close = "```\n"
-
-    comment_open = "<!-- EXERCISE: "
-    comment_close = " -->\n"
-    comment_block_open = f"{comment_open}{filename} PART: {part_number} {comment_close}"
-    comment_block_close = "<!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->\n"
-
-    content_payload = f"{comment_block_open}{content}{comment_block_close}"
-    
-    file_content = f"{fence_open}{content_payload}{fence_close}"
-
-    return file_content, comment_block_open
-
-def create_or_update_solutions(notebook : str, directory : str) -> None:
-    """
-    Create model solutions for the exercises in the notebook. These are the versions
-    that should be in the notebook for exercise development and testing.
-
-    Args:
-        notebook: The notebook to create solutions for
-        directory: The directory to save the solutions to
-    """
-    # make a txt version of the old notebook using nb4llm if old_notebook is a notebook
-    code_matches, md_matches = get_solution_content(notebook)
-
-    for match in code_matches:
-        filename, part_number, content = match
-        path = f"{directory}/{filename}"
-
-        create_or_update_md_solution(filename, part_number, content, path, "code")
-
-    for match in md_matches:
-        filename, part_number, content = match
-        path = f"{directory}/{filename}"
-
-        create_or_update_md_solution(filename, part_number, content, path, "md")
-
-
-def create_or_update_md_solution(filename, part_number, content, path, type : str = "code") -> None:
-    """
-    Replace a single markdown or code solution with a new one in the reference 
-    files, or create/append a new one if it doesn't exist.
-    """
-    if type == "code":
-        file_content, comment_open = format_code_content(content, filename, part_number)
-    elif type == "md":
-        file_content, comment_open = format_md_content(content, filename, part_number)
-    else:
-        raise ValueError(f"Invalid type: {type}")
-    
-    if os.path.exists(path):
-        with open(path, 'r') as f:
-            existing_file_content = f.read()
-
-        if existing_file_content == file_content:
-            return
+        if block_type == "code":
+            solutions[filename].append(
+                {
+                    "type": "code",
+                    "part": part,
+                    "indent": match.group("indent"),
+                    "separator": match.group("separator"),
+                    "content": match.group("content").rstrip("\r\n"),
+                }
+            )
         else:
-            # regex the existing content for the comment_open and get the 
-            # content between it and the next comment_closed, using the 
-            # get_solution_content function
-            matches = re.findall(comment_open, existing_file_content, re.DOTALL)
-            if len(matches) == 1:
-                _, _, old_content = matches[0]
-            elif len(matches) > 1:
-                raise ValueError(f"Multiple copies of solution{part_number} found for {filename}")
+            solutions[filename].append(
+                {
+                    "type": "markdown",
+                    "part": part,
+                    "content": match.group("content").rstrip("\r\n"),
+                }
+            )
+
+    return solutions
+
+
+def render_solution_file(filename: str, blocks: List[Dict[str, str]]) -> str:
+    """
+    Render the list of blocks for a solution file back to fenced markdown.
+    """
+    rendered_blocks: List[str] = []
+
+    for block in blocks:
+        part_suffix = f" PART: {block['part']}" if block.get("part") else ""
+
+        if block["type"] == "code":
+            indent = block["indent"]
+            separator = block["separator"]
+            content = block["content"]
+
+            code_lines = [
+                "```python",
+                f"{indent}######################",
+                f"{indent}# EXERCISE: {filename}{part_suffix}",
+                f"{indent}{separator}",
+            ]
+
+            if content:
+                code_lines.append(content)
             else:
-                old_content = None  
+                code_lines.append("")
 
-            if old_content == None:
-                #append the content to the existing file
-                with open(path, 'a') as f:
-                    f.write(file_content)
+            code_lines.append(f"{indent}######################")
+            code_lines.append("```")
+            rendered_blocks.append("\n".join(code_lines))
+        else:
+            content = block["content"]
+            md_lines = [
+                "```markdown",
+                f"<!-- EXERCISE: {filename}{part_suffix} -->",
+            ]
+            if content:
+                md_lines.append(content)
             else:
-                # find and replace the content between the current_comment_open
-                # and the next comment_closed
-                old_file_content, _ = format_code_content(old_content, filename, part_number)
-                new_content = re.sub(old_file_content, file_content, existing_file_content)
-                with open(path, 'w') as f:
-                    f.write(new_content)    
+                md_lines.append("")
+            md_lines.append("<!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->")
+            md_lines.append("```")
+            rendered_blocks.append("\n".join(md_lines))
 
-    else:  # file does not exist, create it
-        with open(path, 'w') as f:
-            f.write(file_content)
+    return "\n\n".join(rendered_blocks) + "\n"
 
+
+def write_solution_files(
+    output_dir: Path, solutions: "OrderedDict[str, List[Dict[str, str]]]"
+) -> None:
+    for name, blocks in solutions.items():
+        target = output_dir / name
+        target.write_text(render_solution_file(name, blocks), encoding="utf-8")
+
+
+def main() -> None:
+    args = parse_args()
+    notebook_path = Path(args.notebook).resolve()
+    output_dir = Path(args.output_dir).resolve()
+
+    if not notebook_path.exists():
+        raise FileNotFoundError(f"Notebook {notebook_path} does not exist.")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    txt_path, cleanup = get_text_notebook_path(notebook_path, args.force)
+
+    try:
+        notebook_text = txt_path.read_text(encoding="utf-8")
+        solutions = extract_solution_blocks(notebook_text)
+
+        if not solutions:
+            print("No exercise markers found; no files were written.", file=sys.stderr)
+            return
+
+        write_solution_files(output_dir, solutions)
+        print(f"Wrote {len(solutions)} solution file(s) to {output_dir}.")
+    finally:
+        if cleanup and txt_path.exists():
+            txt_path.unlink()
 
 
 if __name__ == "__main__":
-    # usage: python solutions.py <notebook> <directory>
-    if len(sys.argv) == 1:
-        print("Usage: python solutions.py <notebook> <directory>")
-        sys.exit()
-
-    notebook = sys.argv[1]
-    directory = sys.argv[2]
-
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    
-    if not os.path.isdir(directory):
-        raise ValueError(f"The provided directory {directory} is not a directory")
-    
-    if not os.path.exists(notebook):
-        raise ValueError(f"The provided notebook {notebook} does not exist")
-    
-    if not os.path.isfile(notebook):
-        raise ValueError(f"The provided notebook {notebook} is not a file")
-        
-    if notebook.endswith(".ipynb"):
-        # make a txt version of the old notebook using nb4llm if old_notebook is a notebook
-        txt_notebook = notebook.split('.')[:-1] + [".txt"]
-        txt_notebook = "".join(txt_notebook)
-
-        # ----- File Override Protection -----
-        i = 0
-        clean_up = True
-        while os.path.exists(txt_notebook):
-            print(f"The txt notebook {txt_notebook} already exists. ")
-            # check in with the user to see if they want to replace the txt notebook
-            replace = input(f"Replace the existing txt notebook, {txt_notebook}? (y/n): ")
-            if "n" in replace.lower():
-                # prompt the user for an alternative txt notebook name
-                txt_notebook = input(
-                    "Enter the alternative temporary txt notebook name: "
-                )
-                i += 1
-                if i > 5:
-                    raise ValueError(
-                        "You have tried to replace the txt notebook too many times. "
-                        "Please manually convert the notebook to a txt file and run the script again."
-                    )
-            elif "y" in replace.lower():
-                clean_up = False
-            else:
-                raise ValueError(f"Invalid input: {replace}")
-
-        nb4llm.convert_notebook_to_txt(notebook, txt_notebook)
-
-    elif notebook.endswith(".txt"):
-        txt_notebook = notebook
-        clean_up = False
-
-    create_or_update_solutions(txt_notebook, directory)
-
-    if clean_up:
-            os.remove(txt_notebook)  # remove the temporary txt notebook after processing
-
-    else:
-        raise ValueError(f"The provided notebook {notebook} is not a .ipynb or .md file")
+    main()

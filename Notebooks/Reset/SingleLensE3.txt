@@ -1,0 +1,8 @@
+```python
+    ######################
+    # EXERCISE: SingleLensE3.txt
+    #--------------------- 
+    # Your chi2 calculation goes here
+    chi2_value = 0.
+    ######################
+```

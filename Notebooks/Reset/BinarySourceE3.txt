@@ -1,0 +1,9 @@
+```python
+    ######################
+    # EXERCISE: BinarySourceE3.txt
+    #----------------------
+    # Implement the priors
+    if True:
+        return -1e16
+    ######################
+```

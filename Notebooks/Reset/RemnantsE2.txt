@@ -1,0 +1,7 @@
+```python
+######################
+# EXERCISE: RemnantsE2.txt
+#---------------------
+# Your code goes here
+######################
+```

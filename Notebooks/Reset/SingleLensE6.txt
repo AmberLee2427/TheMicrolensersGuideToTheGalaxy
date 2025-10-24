@@ -1,0 +1,9 @@
+```python
+    ######################
+    # EXERCISE: SingleLensE6.txt
+    #--------------------- 
+    # Magnification curve array
+
+    # Plot lightcurves (technically, manification curves)
+    ######################
+```

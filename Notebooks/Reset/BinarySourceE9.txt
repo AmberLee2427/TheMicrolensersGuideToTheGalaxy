@@ -1,0 +1,5 @@
+```markdown
+<!-- EXERCISE: BinarySourceE9.txt -->
+            *Write your answer here.*
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->
+```

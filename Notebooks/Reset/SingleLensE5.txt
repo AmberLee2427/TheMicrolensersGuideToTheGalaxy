@@ -1,0 +1,26 @@
+```python
+######################
+# EXERCISE: SingleLensE5.txt PART: 1
+#--------------------- 
+# change this to True to remove data with large errors
+mask_large_errors = False
+######################
+```
+
+```python
+######################
+# EXERCISE: SingleLensE5.txt PART: 2
+#--------------------- 
+# change this to your guess for t_0
+t_0_guess = 0
+#plt.vlines(t_0_guess, 16, 20, color='black', linestyle='--', label='t_0')
+######################
+```
+
+```python
+######################
+# EXERCISE: SingleLensE5.txt PART: 3
+#--------------------- 
+# Your code here
+######################
+```
