@@ -7,8 +7,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "The Microlenser's Guide to the Galaxy"
-copyright = '2025, Amber'
-author = 'Amber'
+copyright = '2025, Malpas et al .'
+author = 'Malpas et al.'
 release = '0.1'
 
 # -- General configuration ---------------------------------------------------
@@ -55,6 +55,8 @@ html_theme = 'sphinx_book_theme'
 html_theme_options = {
     "repository_url": "https://github.com/AmberLee2427/TheMicrolensersGuideToTheGalaxy",
     "use_repository_button": True,
+    "footer_start": ["citation"],
+    "footer_end": [],
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -65,7 +67,7 @@ html_static_path = ['_static']
 html_css_files = ['custom.css']
 
 
-html_logo = '2025_07_27_0sw_Kleki-2.png'
+html_logo = '_static/guide-logo.png'
 
 
 # MySTNB-specific settings
