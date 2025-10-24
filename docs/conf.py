@@ -62,6 +62,12 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+html_css_files = ['custom.css']
+
+
+html_logo = '2025_07_27_0sw_Kleki-2.png'
+
+
 # MySTNB-specific settings
 nb_custom_formats = {
     ".ipynb": [
