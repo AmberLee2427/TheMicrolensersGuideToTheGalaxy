@@ -3,6 +3,8 @@
 </p>
 
 # The Microlenser's Guide to the Galaxy
+[![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmberLee2427/TheMicrolensersGuideToTheGalaxy/HEAD?labpath=Notebooks%2FIntroduction.ipynb)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/AmberLee2427/TheMicrolensersGuideToTheGalaxy?devcontainer_path=.devcontainer%2Fdevcontainer.json)
 Welcome, intrepid explorers of the cosmic tapestry! You are about to embark on a delightful journey through the realm of microlensing. This guide has been meticulously crafted to furnish the eager minds of budding scientists with the skills necessary to navigate the wonders of the Roman microlensing project.
 
 ## Overview
@@ -72,6 +74,11 @@ Some of the more specialised notebooks in this guide have further install requir
 ## Usage
 
 Open the Jupyter notebooks nestled within the `Notebooks` directory, where each document brims with exercises and illuminating examples. Follow the instructions inside your [`Introduction.ipynb`](Notebooks/Introduction.ipynb) ([GitHub link](https://github.com/AmberLee2427/TheMicrolensersGuideToTheGalaxy/blob/main/Notebooks/Introduction.ipynb)) notebook and prepare to explore the captivating concepts of microlensing with all the enthusiasm of a seasoned hitchhiker. 
+
+## Run Online
+
+- **Binder** launches a temporary JupyterLab workspace in the cloud. Click the badge above or visit the Binder link to open `Notebooks/Introduction.ipynb`; builds rely on the repo’s `environment.yml`/`requirements.txt`, so launches can take a minute on cold starts.
+- **GitHub Codespaces** provisions a full VS Code environment with the repository pre-cloned and dependencies installed via `pip install -r requirements.txt`. Use the badge above (GitHub account required) for a persistent development workspace where you can run tests, rebuild docs, and commit changes.
 
 ## Developer Workflow
 

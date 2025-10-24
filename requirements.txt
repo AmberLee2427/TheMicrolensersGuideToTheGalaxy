@@ -16,3 +16,6 @@ seaborn
 corner
 tqdm
 requests
+pyvo
+MulensModel
+VBMicrolensing
