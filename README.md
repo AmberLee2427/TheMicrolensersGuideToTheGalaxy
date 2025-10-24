@@ -84,6 +84,8 @@ Open the Jupyter notebooks nestled within the `Notebooks` directory, where each 
 - **GitHub Codespaces** provisions a full VS Code environment with the repository pre-cloned and dependencies installed via `pip install -r requirements.txt`. Use the badge above (GitHub account required) for a persistent development workspace where you can run tests, rebuild docs, and commit changes.
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/AmberLee2427/TheMicrolensersGuideToTheGalaxy?devcontainer_path=.devcontainer%2Fdevcontainer.json) 
 
+- **Documentation** offers a spoiler-free tour of every notebook plus quick Binder launch buttons—swing by the [guidebook site](https://amberlee2427.github.io/TheMicrolensersGuideToTheGalaxy/) when you want to browse before you boot up.
+
 ## Developer Workflow
 
 - **Reference directories** live under `Notebooks/Exercises/` (solved example blocks) and `Notebooks/Reset/` (blank learner prompts). Keep both in sync when you touch an exercise.
