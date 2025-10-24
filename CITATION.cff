@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: If you use The Microlenser's Guide to the Galaxy in your research or teaching, please cite this release.
+title: The Microlenser's Guide to the Galaxy
+version: 0.1.0
+date-released: 2025-10-24
+type: software
+abstract: >
+  An open collection of microlensing training notebooks, utilities, and
+  build tools designed to support the Roman Space Telescope microlensing
+  community. This release bundles the core curriculum, automated
+  solution-swapping scripts, reproducible build workflow, and tests.
+repository-code: https://github.com/AmberLee2427/TheMicrolensersGuideToTheGalaxy
+license: MIT
+keywords:
+  - microlensing
+  - astronomy education
+  - Jupyter notebooks
+  - Roman Space Telescope
+authors:
+  - family-names: Malpas
+    given-names: Amber
+    email: malpas.1@osu.edu
+  - family-names: Kruszynska
+    given-names: Katarzyna
+  - family-names: Crisp
+    given-names: Alison
+  - family-names: Murlidhar
+    given-names: Arjun
+  - family-names: Johnson
+    given-names: Samson
