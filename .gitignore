@@ -12,6 +12,7 @@ Progress/
 build/
 docs/_build/
 docs/Notebooks/
+docs/Solved/
 
 # Python cache
 __pycache__/
