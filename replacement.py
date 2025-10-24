@@ -4,10 +4,11 @@ import os
 import sys
 
 def replace_solutions(
-        old_notebook : str, 
-        new_notebook : str, 
+        old_notebook : str,
+        new_notebook : str,
         reference_dir : str = "Notebooks/Exercises/",
-        destructive : bool = True
+        destructive : bool = True,
+        skip_missing : bool = False
     ) -> None:
     """Replace the solutions in the old notebook with the solutions from the 
     reference files and save in a new notebook
@@ -45,13 +46,13 @@ def replace_solutions(
     # make a txt version of the old notebook using nb4llm if old_notebook is a notebook
     if old_notebook.endswith(".ipynb"):
         nb4llm.convert_ipynb_to_txt(old_notebook, "old_notebook.txt")
+        txt_source = "old_notebook.txt"
     elif old_notebook.endswith(".txt"):
-        with open(old_notebook, 'r') as f:
-            notebook = f.read()
+        txt_source = old_notebook
     else:
         raise Exception(f"Input notebook {old_notebook} is not a notebook or a txt file")
 
-    with open("old_notebook.txt", 'r') as f:
+    with open(txt_source, 'r') as f:
         notebook = f.read()
 
     # Look for the indeicative solution marker
@@ -84,11 +85,25 @@ def replace_solutions(
 
     #------ Handle the code matches ------
     for match in code_matches:
-        notebook = replace_with_corresponding_solution(match, notebook, code_pattern, reference_dir, "code")
+        notebook = replace_with_corresponding_solution(
+            match,
+            notebook,
+            code_pattern,
+            reference_dir,
+            "code",
+            skip_missing
+        )
 
     #------ Handle the markdown matches ------
     for match in md_matches:
-        notebook = replace_with_corresponding_solution(match, notebook, md_pattern, reference_dir, "markdown")
+        notebook = replace_with_corresponding_solution(
+            match,
+            notebook,
+            md_pattern,
+            reference_dir,
+            "markdown",
+            skip_missing
+        )
 
     if len(code_matches) == 0 and len(md_matches) == 0:
         raise Exception("No exercises found")
@@ -108,14 +123,16 @@ def replace_solutions(
     # if destructive is true, delete the txt file
     if destructive:
         os.remove(new_notebook) # new_notebook = <new notebook>.txt
-    os.remove("old_notebook.txt")
+    if old_notebook.endswith(".ipynb") and os.path.exists("old_notebook.txt"):
+        os.remove("old_notebook.txt")
 
 def replace_with_corresponding_solution(
-        match : tuple, 
-        notebook : str, 
-        pattern : re.Pattern, 
-        reference_dir : str, 
-        block_type : str = "code"
+        match : tuple,
+        notebook : str,
+        pattern : re.Pattern,
+        reference_dir : str,
+        block_type : str = "code",
+        skip_missing : bool = False
     ) -> str:
         """Replace the content of the block with the corresponding solution block
 
@@ -138,11 +155,16 @@ def replace_with_corresponding_solution(
         print(f"{block_type} match: {match}")
         block, filename, part_number = match
 
-        if not os.path.exists(f"{reference_dir}{filename}"):
-            raise Exception(f"Solution file {filename} does not exist")
+        solution_path = f"{reference_dir}{filename}"
+        if not os.path.exists(solution_path):
+            message = f"Solution file {filename} does not exist"
+            if skip_missing:
+                print(f"[replacement] {message} — leaving block unchanged.")
+                return notebook
+            raise Exception(message)
 
         # read the solution file
-        with open(f"{reference_dir}{filename}", 'r') as f:
+        with open(solution_path, 'r') as f:
             solution_file = f.read()
 
         # replace the whole block with the corresponding solution block
@@ -156,10 +178,18 @@ def replace_with_corresponding_solution(
                 replacements.append(replacement)
 
         if len(replacements) == 0:
-            raise Exception(f"No solution found for {filename} part {part_number}")
+            message = f"No solution found for {filename} part {part_number}"
+            if skip_missing:
+                print(f"[replacement] {message} — leaving block unchanged.")
+                return notebook
+            raise Exception(message)
 
         if len(replacements) > 1:
-            raise Exception(f"Multiple solutions found for {filename}, part {part_number}")
+            message = f"Multiple solutions found for {filename}, part {part_number}"
+            if skip_missing:
+                print(f"[replacement] {message} — leaving block unchanged.")
+                return notebook
+            raise Exception(message)
 
         replacement = replacements[0]
         solution_block, _, part = replacement
@@ -168,9 +198,6 @@ def replace_with_corresponding_solution(
             # replace the content with the solution
             notebook = notebook.replace(block, solution_block)
 
-        if len(replacements) == 0:
-            raise Exception(f"No solution found for {filename} part {part_number}")
-        
         return notebook
 
 if __name__ == "__main__":
@@ -183,19 +210,20 @@ if __name__ == "__main__":
 
     reference_dir = "Notebooks/Exercises/"
     destructive = True
+    skip_missing = False
 
-    try:
-        arg = sys.argv[3]
+    for arg in sys.argv[3:]:
         if arg == "--keep":
             destructive = False
+        elif arg == "--force":
+            skip_missing = True
         else:
             reference_dir = arg
-        arg = sys.argv[4]
-        if arg == "--keep":
-            destructive = False
-        else:
-            reference_dir = arg
-    except:
-        pass
 
-    replace_solutions(input_file, output_file, reference_dir, destructive)
+    replace_solutions(
+        input_file,
+        output_file,
+        reference_dir,
+        destructive,
+        skip_missing
+    )

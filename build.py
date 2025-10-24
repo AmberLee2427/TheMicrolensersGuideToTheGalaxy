@@ -35,10 +35,10 @@ def clean_directory(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
 
 
-def copy_unsolved_notebooks() -> None:
-    if DOCS_UNSOLVED_DIR.exists():
-        shutil.rmtree(DOCS_UNSOLVED_DIR)
-    shutil.copytree(NOTEBOOK_ROOT, DOCS_UNSOLVED_DIR)
+def copy_notebook_tree(target: Path) -> None:
+    if target.exists():
+        shutil.rmtree(target)
+    shutil.copytree(NOTEBOOK_ROOT, target)
 
 
 def iter_course_notebooks() -> Iterable[Path]:
@@ -52,7 +52,9 @@ def iter_course_notebooks() -> Iterable[Path]:
 
 def generate_solved_notebooks() -> None:
     clean_directory(SOLVED_BUILD_DIR)
-    clean_directory(DOCS_SOLVED_DIR)
+
+    # Ensure docs/Solved mirrors the notebook tree (assets, data, etc.)
+    copy_notebook_tree(DOCS_SOLVED_DIR)
 
     for src in iter_course_notebooks():
         dest = SOLVED_BUILD_DIR / src.name
@@ -66,6 +68,7 @@ def generate_solved_notebooks() -> None:
                     str(dest),
                     str(REFERENCE_DIR),
                     destructive=True,
+                    skip_missing=True,
                 )
             print(f"Solved notebook created for {src.name}.")
         except Exception as exc:
@@ -74,6 +77,10 @@ def generate_solved_notebooks() -> None:
             )
             print("Copying the unsolved version instead.")
             shutil.copy2(src, dest)
+        finally:
+            temp_txt = Path("old_notebook.txt")
+            if temp_txt.exists():
+                temp_txt.unlink()
 
         shutil.copy2(dest, DOCS_SOLVED_DIR / src.name)
 
@@ -91,7 +98,7 @@ def build_sphinx_docs() -> None:
 
 def main() -> None:
     clean_directory(BUILD_ROOT)
-    copy_unsolved_notebooks()
+    copy_notebook_tree(DOCS_UNSOLVED_DIR)
     generate_solved_notebooks()
     build_sphinx_docs()
 
