@@ -98,6 +98,11 @@ Your contributions are the hydrogen that makes this project shine brighter! If y
 
 This project is released under the [MIT License](LICENSE). Fear not, for the original material within these resources, including code snippets, is free for use—like the best snacks on an interstellar flight. However, do keep in mind that any copyrighted material within the notebooks is bound by the restrictions of its original copyright holders.
 
+## Citation
+
+Malpas, A., Kruszynska, K., Crisp, A., Murlidhar, A., & Johnson, S. (2025). The Microlenser's Guide to the Galaxy (v0.1.0). Zenodo. https://doi.org/10.5281/zenodo.17437885
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17437885.svg)](https://doi.org/10.5281/zenodo.17437885)
+
 ## Contact
 
 Should questions or inquiries cross your mind or terminal, feel free to reach out to the project author, who is as approachable as a friendly as wait staff at the restaurant at the end of the Universe:
