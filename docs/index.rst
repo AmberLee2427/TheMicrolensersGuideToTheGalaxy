@@ -46,6 +46,7 @@ For those eager to tackle the challenges head-on, the unsolved notebooks present
 .. toctree::
    :maxdepth: 1
    :titlesonly:
+   :caption: Notebook Library
 
    Notebooks/Introduction
    Notebooks/PlanetsAndBrownDwarfs
@@ -63,6 +64,7 @@ For those who prefer a guided experience, the solved notebooks offer comprehensi
 .. toctree::
    :maxdepth: 1
    :titlesonly:
+   :caption: Solved Notebook Library
 
    Solved/Introduction
    Solved/PlanetsAndBrownDwarfs
