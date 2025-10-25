@@ -2,7 +2,7 @@
   <a href="https://amberlee2427.github.io/TheMicrolensersGuideToTheGalaxy/"><img src="Logos/2025_07_27_0sw_Kleki-2.png" alt="logo" width=40%></a>
 </p>
 
-# The Microlenser's Guide to the Galaxy
+# [The Microlenser's Guide to the Galaxy](https://amberlee2427.github.io/TheMicrolensersGuideToTheGalaxy/)
  
 [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AmberLee2427/TheMicrolensersGuideToTheGalaxy/HEAD?labpath=Notebooks%2FIntroduction.ipynb)  
 
