@@ -1,17 +1,3 @@
 .bd-header .navbar-brand img {
     max-height: 64px;
 }
-
-.bd-footer {
-    padding-top: 1.5rem;
-}
-
-.bd-footer .citation-footer {
-    text-align: center;
-    font-size: 0.9rem;
-    line-height: 1.4;
-}
-
-.bd-footer .citation-footer img {
-    height: 32px;
-}
