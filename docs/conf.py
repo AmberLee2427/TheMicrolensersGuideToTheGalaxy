@@ -78,6 +78,8 @@ nb_custom_formats = {
     ],
 }
 
+nb_execution_timeout = 300
+
 # Intersphinx mapping
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
 
