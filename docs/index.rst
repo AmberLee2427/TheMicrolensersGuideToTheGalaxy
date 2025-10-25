@@ -34,10 +34,6 @@ Pick a notebook, click the rocket, and let Binder spin up a live JupyterLab with
 |               |                    |                                                   |                                              | optimisation tricks, and goodness-of-fit        |
 |               |                    |                                                   |                                              | diagnostics.                                    |
 +---------------+--------------------+---------------------------------------------------+----------------------------------------------+-------------------------------------------------+
-| MulensModel   | |binder-mulens|    | :doc:`Unsolved <Notebooks/MulensModelFSPLError>` \| :doc:`Solved <Solved/MulensModelFSPLError>`  | Wrestle with finite-source effects the          |
-|               |                    |                                                   |                                              | MulensModel way and learn to love numerical     |
-|               |                    |                                                   |                                              | subtleties.                                     |
-+---------------+--------------------+---------------------------------------------------+----------------------------------------------+-------------------------------------------------+
 
 Unsolved Notebooks
 --------------------
