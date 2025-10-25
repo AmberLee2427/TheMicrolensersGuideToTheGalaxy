@@ -8,7 +8,7 @@
 
 project = "The Microlenser's Guide to the Galaxy"
 copyright = "2025, Malpas et al."
-author = "Malpas, A., Kruszynska, K., Crisp, A., Murlidhar, A., & Johnson, S. (2025). The Microlenser's Guide to the Galaxy (v0.1.0). Zenodo. [doi:10.5281/zenodo.17437885](https://doi.org/10.5281/zenodo.17437885)"
+author = 'Malpas, A., Kruszynska, K., Crisp, A., Murlidhar, A., & Johnson, S. (2025). The Microlenser\'s Guide to the Galaxy (v0.1.0). Zenodo. <a href="https://doi.org/10.5281/zenodo.17437885">doi:10.5281/zenodo.17437885</a>'
 release = '0.1'
 
 # -- General configuration ---------------------------------------------------
