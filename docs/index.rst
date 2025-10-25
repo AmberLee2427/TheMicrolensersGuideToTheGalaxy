@@ -39,6 +39,40 @@ Pick a notebook, click the rocket, and let Binder spin up a live JupyterLab with
 |              |                    |                                                   |                                              | subtleties.                                     |
 +--------------+--------------------+---------------------------------------------------+----------------------------------------------+-------------------------------------------------+
 
+Unsolved Notebooks
+--------------------
+For those eager to tackle the challenges head-on, the unsolved notebooks present a series of exercises
+
+.. toctree::
+   :maxdepth: 1
+   :titlesonly:
+
+   Notebooks/Introduction
+   Notebooks/SingleLens
+   Notebooks/BinarySource
+   Notebooks/PlanetsAndBrownDwarfs
+   Notebooks/RemnantsAndDarkMatter
+   Notebooks/Eras
+   Notebooks/Modelling
+   Notebooks/MulensModelFSPLError
+
+Solved Notebooks
+----------------
+For those who prefer a guided experience, the solved notebooks offer comprehensive solutions to the exercises presented in the unsolved versions. Each solved notebook is meticulously crafted to provide clear explanations, step-by-step calculations, and insightful commentary to enhance your understanding of microlensing concepts.
+
+.. toctree::
+   :maxdepth: 1
+   :titlesonly:
+
+   Solved/Introduction
+   Solved/SingleLens
+   Solved/BinarySource
+   Solved/PlanetsAndBrownDwarfs
+   Solved/RemnantsAndDarkMatter
+   Solved/Eras
+   Solved/Modelling
+   Solved/MulensModelFSPLError
+
 
 .. |binder-intro| image:: https://mybinder.org/badge_logo.svg
    :target: https://mybinder.org/v2/gh/AmberLee2427/TheMicrolensersGuideToTheGalaxy/HEAD?labpath=Notebooks%2FIntroduction.ipynb
