@@ -11,48 +11,33 @@ Notebook Expeditions
 
 Pick a notebook, click the rocket, and let Binder spin up a live JupyterLab with the learner exercise already open. Prefer an offline jaunt? Visit the unsolved page to scout the terrain—or hop straight to the solved rendition when you crave a canonical answer key.
 
-- |binder-intro| :doc:`Unsolved <Notebooks/Introduction>` \| :doc:`Solved <Solved/Introduction>` — Orientation, Einstein radii, and a guided tour of microlensing essentials.
-- |binder-single| :doc:`Unsolved <Notebooks/SingleLens>` \| :doc:`Solved <Solved/SingleLens>` — Build and fit the classic 1L1S model, one glorious Paczyński bump at a time.
-- |binder-binary| :doc:`Unsolved <Notebooks/BinarySource>` \| :doc:`Solved <Solved/BinarySource>` — Explore the choreography of dual sources and nail down blended fluxes.
-- |binder-planets| :doc:`Unsolved <Notebooks/PlanetsAndBrownDwarfs>` \| :doc:`Solved <Solved/PlanetsAndBrownDwarfs>` — Hunt for planetary companions and elusive brown dwarfs in the wings of microlensing events.
-- |binder-remnants| :doc:`Unsolved <Notebooks/RemnantsAndDarkMatter>` \| :doc:`Solved <Solved/RemnantsAndDarkMatter>` — Trace the signatures of remnants and dark denizens lurking in Roman’s field of view.
-- |binder-eras| :doc:`Unsolved <Notebooks/Eras>` \| :doc:`Solved <Solved/Eras>` — Time-travel through the observational eras that shaped microlensing lore.
-- |binder-modelling| :doc:`Unsolved <Notebooks/Modelling>` \| :doc:`Solved <Solved/Modelling>` — Dive deep into modelling strategies, optimisation tricks, and goodness-of-fit diagnostics.
-- |binder-mulens| :doc:`Unsolved <Notebooks/MulensModelFSPLError>` \| :doc:`Solved <Solved/MulensModelFSPLError>` — Wrestle with finite-source effects the MulensModel way and learn to love numerical subtleties.
-
-
-How the Exercises Appear Here
------------------------------
-
-During the build we copy the repository’s `Notebooks/` directory as-is for the unsolved pages, then conjure a matched solved set via `replacement.py`. That way the documentation offers both spoiler-free prompts and a master key—without you having to babysit duplicate notebooks in source control.
-
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Notebook Library
-
-   Notebooks/Introduction
-   Notebooks/SingleLens
-   Notebooks/BinarySource
-   Notebooks/PlanetsAndBrownDwarfs
-   Notebooks/RemnantsAndDarkMatter
-   Notebooks/Eras
-   Notebooks/Modelling
-   Notebooks/MulensModelFSPLError
-
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Solved Notebook Library
-
-   Solved/Introduction
-   Solved/SingleLens
-   Solved/BinarySource
-   Solved/PlanetsAndBrownDwarfs
-   Solved/RemnantsAndDarkMatter
-   Solved/Eras
-   Solved/Modelling
-   Solved/MulensModelFSPLError
++--------------+--------------------+---------------------------------------------------+----------------------------------------------+-------------------------------------------------+
+| Introduction | |binder-intro|     | :doc:`Unsolved <Notebooks/Introduction>`          | :doc:`Solved <Solved/Introduction>`          | Orientation, Einstein radii, and a guided tour  | 
+|              |                    |                                                   |                                              | of microlensing essentials.                     |
++--------------+--------------------+---------------------------------------------------+----------------------------------------------+-------------------------------------------------+
+| Single Lens  | |binder-single|    | :doc:`Unsolved <Notebooks/SingleLens>`            | :doc:`Solved <Solved/SingleLens>`            | Build and fit the classic 1L1S model, one       |
+|              |                    |                                                   |                                              | glorious Paczyński bump at a time.              |
++--------------+--------------------+---------------------------------------------------+----------------------------------------------+-------------------------------------------------+
+| Binary Source| |binder-binary|    | :doc:`Unsolved <Notebooks/BinarySource>`          | :doc:`Solved <Solved/BinarySource>`          | Explore the choreography of dual sources and    |
+|              |                    |                                                   |                                              | nail down blended fluxes.                       |
++--------------+--------------------+---------------------------------------------------+----------------------------------------------+-------------------------------------------------+
+| Planets &    | |binder-planets|   | :doc:`Unsolved <Notebooks/PlanetsAndBrownDwarfs>` | :doc:`Solved <Solved/PlanetsAndBrownDwarfs>` | Hunt for planetary companions and elusive brown |
+|              |                    |                                                   |                                              | dwarfs in the wings of microlensing events.     |
++--------------+--------------------+---------------------------------------------------+----------------------------------------------+-------------------------------------------------+
+| Remnants &   | |binder-remnants|  | :doc:`Unsolved <Notebooks/RemnantsAndDarkMatter>` | :doc:`Solved <Solved/RemnantsAndDarkMatter>` | Trace the signatures of remnants and dark       |
+|              |                    |                                                   |                                              | denizens                                        |
++--------------+--------------------+---------------------------------------------------+----------------------------------------------+-------------------------------------------------+
+| Eras         | |binder-eras|      | :doc:`Unsolved <Notebooks/Eras>`                  | :doc:`Solved <Solved/Eras>`                  | Time-travel through the observational eras that |
+|              |                    |                                                   |                                              | shaped microlensing lore.                       |
++--------------+--------------------+---------------------------------------------------+----------------------------------------------+-------------------------------------------------+
+| Modelling    | |binder-modelling| | :doc:`Unsolved <Notebooks/Modelling>`             | :doc:`Solved <Solved/Modelling>`             | Dive deep into modelling strategies,            |
+|              |                    |                                                   |                                              | optimisation tricks, and goodness-of-fit        |
+|              |                    |                                                   |                                              | diagnostics.                                    |
++--------------+--------------------+---------------------------------------------------+----------------------------------------------+-------------------------------------------------+
+| MulensModel  | |binder-mulens|    | :doc:`Unsolved <Notebooks/MulensModelFSPLError>` \| :doc:`Solved <Solved/MulensModelFSPLError>`  | Wrestle with finite-source effects the          |
+|              |                    |                                                   |                                              | MulensModel way and learn to love numerical     |
+|              |                    |                                                   |                                              | subtleties.                                     |
++--------------+--------------------+---------------------------------------------------+----------------------------------------------+-------------------------------------------------+
 
 
 .. |binder-intro| image:: https://mybinder.org/badge_logo.svg
