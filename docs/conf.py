@@ -78,6 +78,15 @@ nb_custom_formats = {
 
 nb_execution_timeout = 300
 
+# Notebook markdown uses Jupyter's $...$ and $$...$$ LaTeX syntax. MyST no
+# longer enables dollar-delimited math by default, so opt in explicitly.
+myst_enable_extensions = [
+    "dollarmath",
+]
+# Jupyter accepts display math next to prose, which occurs throughout the
+# notebooks, while MyST otherwise requires blank lines around every $$ block.
+myst_dmath_double_inline = True
+
 # Intersphinx mapping
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
 
