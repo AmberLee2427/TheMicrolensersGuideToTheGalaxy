@@ -4,4 +4,3 @@ sphinx-book-theme
 sphinx-design
 sphinx-copybutton
 jupytext
-nb4llm

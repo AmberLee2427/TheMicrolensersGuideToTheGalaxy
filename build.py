@@ -1,8 +1,6 @@
-import os
+import json
 import shutil
 import subprocess
-from contextlib import redirect_stdout
-from io import StringIO
 from pathlib import Path
 from typing import Iterable
 
@@ -27,6 +25,11 @@ SOLVED_BUILD_DIR = BUILD_ROOT / "Complete"
 DOCS_ROOT = Path("docs")
 DOCS_UNSOLVED_DIR = DOCS_ROOT / "Notebooks"
 DOCS_SOLVED_DIR = DOCS_ROOT / "Solved"
+
+# PlanetsEX is a deliberately unfinished, developer-only placeholder in the
+# source notebook.  Keep this exception narrow and visible; any other missing
+# answer reference should fail solved-notebook generation loudly.
+ALLOWED_MISSING_SOLUTIONS = {"PlanetsEX.txt"}
 
 
 def clean_directory(path: Path) -> None:
@@ -60,27 +63,18 @@ def generate_solved_notebooks() -> None:
         dest = SOLVED_BUILD_DIR / src.name
         dest.parent.mkdir(parents=True, exist_ok=True)
 
-        try:
-            buffer = StringIO()
-            with redirect_stdout(buffer):
-                replacement.replace_solutions(
-                    str(src),
-                    str(dest),
-                    str(REFERENCE_DIR),
-                    destructive=True,
-                    skip_missing=True,
-                )
-            print(f"Solved notebook created for {src.name}.")
-        except Exception as exc:
-            print(
-                f"Warning: could not generate solved notebook for {src.name}: {exc}"
+        notebook = json.loads(src.read_text(encoding="utf-8"))
+        if replacement.collect_notebook_blocks(notebook, str(src)):
+            replacement.replace_solutions(
+                str(src),
+                str(dest),
+                str(REFERENCE_DIR),
+                allowed_missing=ALLOWED_MISSING_SOLUTIONS,
             )
-            print("Copying the unsolved version instead.")
+            print(f"Solved notebook created for {src.name}.")
+        else:
+            print(f"No marked exercises in {src.name}; copying it unchanged.")
             shutil.copy2(src, dest)
-        finally:
-            temp_txt = Path("old_notebook.txt")
-            if temp_txt.exists():
-                temp_txt.unlink()
 
         shutil.copy2(dest, DOCS_SOLVED_DIR / src.name)
 

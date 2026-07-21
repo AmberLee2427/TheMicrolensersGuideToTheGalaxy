@@ -1,229 +1,292 @@
-import nb4llm
-import re
+"""Fill or reset notebook exercises without relying on notebook cell numbers.
+
+Each notebook cell is scanned independently for named exercise markers.  Only
+the text between a matched marker pair is replaced; cells can be freely added,
+removed, or reordered without affecting the workflow.
+"""
+
+from __future__ import annotations
+
+import argparse
+from dataclasses import dataclass
+import json
 import os
-import sys
+from pathlib import Path
+import tempfile
+from typing import Iterable
+
+from exercise_blocks import (
+    ExerciseBlock,
+    ExerciseBlockError,
+    ExerciseKey,
+    find_exercise_blocks,
+    index_unique_blocks,
+    replace_marked_blocks,
+)
+
+
+@dataclass(frozen=True)
+class LocatedBlock:
+    """An exercise block and the notebook cell containing it."""
+
+    cell_index: int
+    block: ExerciseBlock
+
+
+def _cell_source(cell: dict) -> str:
+    source = cell.get("source", "")
+    return "".join(source) if isinstance(source, list) else source
+
+
+def _set_cell_source(cell: dict, source: str) -> None:
+    """Update a cell while preserving whether its source used a list or string."""
+
+    if isinstance(cell.get("source", ""), list):
+        cell["source"] = source.splitlines(keepends=True)
+    else:
+        cell["source"] = source
+
+
+def collect_notebook_blocks(notebook: dict, source: str) -> list[LocatedBlock]:
+    """Collect unique exercise blocks from all code and Markdown cells."""
+
+    located: list[LocatedBlock] = []
+    seen: dict[ExerciseKey, int] = {}
+
+    for index, cell in enumerate(notebook.get("cells", [])):
+        cell_type = cell.get("cell_type")
+        if cell_type not in {"code", "markdown"}:
+            continue
+        blocks = find_exercise_blocks(_cell_source(cell), cell_type)
+        for block in blocks:
+            if block.key in seen:
+                raise ExerciseBlockError(
+                    f"Duplicate exercise marker {block.key.describe()} in {source}: "
+                    f"cells {seen[block.key]} and {index}."
+                )
+            seen[block.key] = index
+            located.append(LocatedBlock(index, block))
+
+    return located
+
+
+def _load_reference_blocks(
+    reference_dir: Path,
+    keys: Iterable[ExerciseKey],
+    skip_missing: bool,
+    allowed_missing: set[str],
+) -> dict[ExerciseKey, ExerciseBlock]:
+    """Resolve every notebook key to one unambiguous reference block."""
+
+    replacements: dict[ExerciseKey, ExerciseBlock] = {}
+    files: dict[str, dict[ExerciseKey, ExerciseBlock]] = {}
+    problems: list[str] = []
+
+    for key in keys:
+        reference_path = reference_dir / key.filename
+        if not reference_path.exists():
+            if skip_missing or key.filename in allowed_missing:
+                print(
+                    f"[replacement] No reference file for {key.describe()}; "
+                    "leaving the notebook block unchanged."
+                )
+                continue
+            problems.append(f"missing reference file {reference_path}")
+            continue
+
+        if key.filename not in files:
+            text = reference_path.read_text(encoding="utf-8")
+            try:
+                files[key.filename] = index_unique_blocks(
+                    find_exercise_blocks(text), str(reference_path)
+                )
+            except ExerciseBlockError as exc:
+                problems.append(str(exc))
+                files[key.filename] = {}
+
+        replacement = files[key.filename].get(key)
+        if replacement is None:
+            if skip_missing or key.filename in allowed_missing:
+                print(
+                    f"[replacement] No matching block for {key.describe()} in "
+                    f"{reference_path}; leaving it unchanged."
+                )
+                continue
+            problems.append(
+                f"no matching block for {key.describe()} in {reference_path}"
+            )
+            continue
+
+        replacements[key] = replacement
+
+    if problems:
+        details = "\n  - ".join(problems)
+        raise ExerciseBlockError(f"Cannot replace exercises:\n  - {details}")
+
+    return replacements
+
+
+def _write_json_atomic(path: Path, notebook: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temp_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".tmp", dir=path.parent
+    )
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+            json.dump(notebook, handle, ensure_ascii=False, indent=1)
+            handle.write("\n")
+        os.replace(temp_name, path)
+    except Exception:
+        if os.path.exists(temp_name):
+            os.unlink(temp_name)
+        raise
+
+
+def _write_text_atomic(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temp_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".tmp", dir=path.parent
+    )
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+            handle.write(text)
+        os.replace(temp_name, path)
+    except Exception:
+        if os.path.exists(temp_name):
+            os.unlink(temp_name)
+        raise
+
 
 def replace_solutions(
-        old_notebook : str,
-        new_notebook : str,
-        reference_dir : str = "Notebooks/Exercises/",
-        destructive : bool = True,
-        skip_missing : bool = False
-    ) -> None:
-    """Replace the solutions in the old notebook with the solutions from the 
-    reference files and save in a new notebook
-    
+    old_notebook: str,
+    new_notebook: str,
+    reference_dir: str = "Notebooks/Exercises/",
+    destructive: bool = True,
+    skip_missing: bool = False,
+    allowed_missing: Iterable[str] | None = None,
+) -> None:
+    """Replace marked exercise blocks using references and save a new file.
+
+    ``destructive`` is retained for API compatibility with the former
+    text-conversion implementation.  There is no intermediate text file in the
+    cell-aware implementation, so its value has no effect.
+
     Args:
-        old_notebook: The path to the old notebook
-        new_notebook: The path to the new notebook
-        reference_dir: The directory containing the reference files
-        destructive: If true, the new notebook txt file will be deleted
-
-    Raises:
-        Exception: If no exercises are found
-        Exception: If no solution is found for a code exercise
-        Exception: If no solution is found for a markdown exercise
-        Exception: If the old notebook does not exist
-        Exception: If the old notebook is not a notebook or a txt file
-        Exception: If the reference directory does not exist
-        Exception: If the reference directory is not a directory
-
-    Returns:
-        None
+        old_notebook: Input ``.ipynb`` notebook or legacy ``.txt`` export.
+        new_notebook: Output path with the same suffix as the input.
+        reference_dir: Directory containing one reference file per exercise.
+        destructive: Deprecated compatibility argument; ignored.
+        skip_missing: Leave all missing references unchanged when true.
+        allowed_missing: Specific reference filenames that may be absent.
     """
-    if not os.path.exists(old_notebook):
-        raise Exception(f"Input notebook {old_notebook} does not exist")
-    
-    if reference_dir[-1] != "/":
-        reference_dir += "/"
-    
-    if not os.path.exists(reference_dir):
-        raise Exception(f"Reference directory {reference_dir} does not exist")
-    
-    if not os.path.isdir(reference_dir):
-        raise Exception(f"Reference directory {reference_dir} is not a directory")
 
-    # make a txt version of the old notebook using nb4llm if old_notebook is a notebook
-    if old_notebook.endswith(".ipynb"):
-        nb4llm.convert_ipynb_to_txt(old_notebook, "old_notebook.txt")
-        txt_source = "old_notebook.txt"
-    elif old_notebook.endswith(".txt"):
-        txt_source = old_notebook
+    del destructive
+    input_path = Path(old_notebook)
+    output_path = Path(new_notebook)
+    references = Path(reference_dir)
+    allowed = set(allowed_missing or ())
+
+    if not input_path.exists():
+        raise FileNotFoundError(f"Input notebook {input_path} does not exist.")
+    if not references.is_dir():
+        raise NotADirectoryError(f"Reference directory {references} does not exist.")
+    if input_path.suffix.lower() not in {".ipynb", ".txt"}:
+        raise ValueError("Input must be a .ipynb notebook or .txt export.")
+    if output_path.suffix.lower() != input_path.suffix.lower():
+        raise ValueError("Input and output must use the same .ipynb or .txt suffix.")
+
+    if input_path.suffix.lower() == ".ipynb":
+        notebook = json.loads(input_path.read_text(encoding="utf-8"))
+        located = collect_notebook_blocks(notebook, str(input_path))
+        if not located:
+            raise ExerciseBlockError(f"No exercises found in {input_path}.")
+
+        replacements = _load_reference_blocks(
+            references,
+            (item.block.key for item in located),
+            skip_missing,
+            allowed,
+        )
+
+        by_cell: dict[int, list[ExerciseBlock]] = {}
+        for item in located:
+            by_cell.setdefault(item.cell_index, []).append(item.block)
+
+        for cell_index, blocks in by_cell.items():
+            cell = notebook["cells"][cell_index]
+            updated = replace_marked_blocks(_cell_source(cell), blocks, replacements)
+            _set_cell_source(cell, updated)
+
+        _write_json_atomic(output_path, notebook)
     else:
-        raise Exception(f"Input notebook {old_notebook} is not a notebook or a txt file")
+        text = input_path.read_text(encoding="utf-8")
+        blocks = find_exercise_blocks(text)
+        if not blocks:
+            raise ExerciseBlockError(f"No exercises found in {input_path}.")
+        index_unique_blocks(blocks, str(input_path))
+        replacements = _load_reference_blocks(
+            references,
+            (block.key for block in blocks),
+            skip_missing,
+            allowed,
+        )
+        _write_text_atomic(output_path, replace_marked_blocks(text, blocks, replacements))
 
-    with open(txt_source, 'r') as f:
-        notebook = f.read()
-
-    # Look for the indeicative solution marker
-    # Pattern: (######################\n# EXERCISE: (.*?)(?: PART: (\d+))?\n)(.*?)(\n######################)
-    #      or: ((<!-- EXERCISE: (.*?)(?: PART: (\d+))? -->)(.*?)(<!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->)
-    #           begin_marker, solution_file_name, (optional) part_number, content, end_marker
-
-    code_pattern = (
-        r".*?(######################.*?"        # ".*?" in case of tabs and rogue
-        r"EXERCISE: (.*?)(?: PART: ([^\n]+))?\n"  # spaces
-        r".*?"                                  # <-- the actual solution content
-        r"######################)"              # everything wrap in "(", ")" to 
-    )                                           # catch the entire block
-
-    markdown_pattern = (
-        r"(<!-- EXERCISE: (.*?)(?: PART: ([^\n]+))? -->"  # shouldn't be indented
-        r".*?"                                  # <-- the actual solution content
-        r"<!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->)"    # shouldn't be indented
+    print(
+        f"Replaced {len(replacements)} exercise block(s) in {input_path}; "
+        f"wrote {output_path}."
     )
 
-    # The "EXERCISE: * PART: *" must be unique for the replacement to work
-    # If there are multiple matches, an exception will be raised
-    # If there are no matches, an exception will be raised
 
-    code_pattern = re.compile(code_pattern, re.DOTALL)    # re.DOTALL allows . to 
-    md_pattern = re.compile(markdown_pattern, re.DOTALL)  # match newlines
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Fill or reset marked exercises in a notebook."
+    )
+    parser.add_argument("input_notebook")
+    parser.add_argument("output_notebook")
+    parser.add_argument(
+        "reference_dir",
+        nargs="?",
+        default="Notebooks/Exercises/",
+        help="Answer or reset reference directory (default: Notebooks/Exercises/).",
+    )
+    parser.add_argument(
+        "--allow-missing",
+        action="append",
+        default=[],
+        metavar="FILENAME",
+        help="Leave this specifically named missing reference unchanged; repeatable.",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help=argparse.SUPPRESS,
+    )
+    parser.add_argument(
+        "--keep",
+        action="store_true",
+        help=argparse.SUPPRESS,
+    )
+    return parser.parse_args()
 
-    code_matches = code_pattern.findall(notebook)  # findall returns a list of tuples
-    md_matches = md_pattern.findall(notebook)  # each tuple contains the match groups
 
-    #------ Handle the code matches ------
-    for match in code_matches:
-        notebook = replace_with_corresponding_solution(
-            match,
-            notebook,
-            code_pattern,
-            reference_dir,
-            "code",
-            skip_missing
+def main() -> None:
+    args = parse_args()
+    if args.keep:
+        print("[replacement] --keep is no longer needed; no temporary file is created.")
+    if args.force:
+        print(
+            "[replacement] --force is a deprecated alias for allowing all missing "
+            "references. Prefer --allow-missing FILENAME."
         )
+    replace_solutions(
+        args.input_notebook,
+        args.output_notebook,
+        args.reference_dir,
+        skip_missing=args.force,
+        allowed_missing=args.allow_missing,
+    )
 
-    #------ Handle the markdown matches ------
-    for match in md_matches:
-        notebook = replace_with_corresponding_solution(
-            match,
-            notebook,
-            md_pattern,
-            reference_dir,
-            "markdown",
-            skip_missing
-        )
-
-    if len(code_matches) == 0 and len(md_matches) == 0:
-        raise Exception("No exercises found")
-
-    if new_notebook.endswith(".ipynb"):
-        # replace txt extention with ipynb
-        new_notebook = new_notebook.replace(".ipynb", ".txt") # = <new notebook>.txt
-
-    # save the notebook (txt)
-    with open(new_notebook, 'w') as f:
-        f.write(notebook)
-    
-    # convert to ipynb properly
-    nb4llm.convert_txt_to_ipynb(new_notebook, new_notebook.replace(".txt", ".ipynb"))
-    # output saved as <new notebook>.ipynb
-
-    # if destructive is true, delete the txt file
-    if destructive:
-        os.remove(new_notebook) # new_notebook = <new notebook>.txt
-    if old_notebook.endswith(".ipynb") and os.path.exists("old_notebook.txt"):
-        os.remove("old_notebook.txt")
-
-def replace_with_corresponding_solution(
-        match : tuple,
-        notebook : str,
-        pattern : re.Pattern,
-        reference_dir : str,
-        block_type : str = "code",
-        skip_missing : bool = False
-    ) -> str:
-        """Replace the content of the block with the corresponding solution block
-
-        Args:
-            match: The match object from the code_pattern or md_pattern
-            notebook: The notebook to replace the content in
-            code_pattern: The pattern to find the solution block in
-            reference_dir: The directory containing the reference files
-            block_type: The type of block to replace, either "code" or "markdown"
-
-        Returns:
-            The notebook with the content replaced
-
-        Raises:
-            Exception: If multiple solutions are found for the block
-            Exception: If no solution is found for the block
-            Exception: If the block type is not valid
-            Exception: If the solution file does not exist
-        """
-        print(f"{block_type} match: {match}")
-        block, filename, part_number = match
-
-        solution_path = f"{reference_dir}{filename}"
-        if not os.path.exists(solution_path):
-            message = f"Solution file {filename} does not exist"
-            if skip_missing:
-                print(f"[replacement] {message} — leaving block unchanged.")
-                return notebook
-            raise Exception(message)
-
-        # read the solution file
-        with open(solution_path, 'r') as f:
-            solution_file = f.read()
-
-        # replace the whole block with the corresponding solution block
-        found_patterns = pattern.findall(solution_file)
-
-        replacements = []
-        for replacement in found_patterns:
-            solution_block, file, part = replacement
-            print(f"solution_block: {solution_block}, file: {file}, part: {part}")
-            if file == filename and part == part_number:
-                replacements.append(replacement)
-
-        if len(replacements) == 0:
-            message = f"No solution found for {filename} part {part_number}"
-            if skip_missing:
-                print(f"[replacement] {message} — leaving block unchanged.")
-                return notebook
-            raise Exception(message)
-
-        if len(replacements) > 1:
-            message = f"Multiple solutions found for {filename}, part {part_number}"
-            if skip_missing:
-                print(f"[replacement] {message} — leaving block unchanged.")
-                return notebook
-            raise Exception(message)
-
-        replacement = replacements[0]
-        solution_block, _, part = replacement
-        if part_number == part:
-            print(f"Solution: {solution_block}")
-            # replace the content with the solution
-            notebook = notebook.replace(block, solution_block)
-
-        return notebook
 
 if __name__ == "__main__":
-    if not len(sys.argv) >= 3:
-        print("Usage: python replacement.py <input_notebook> <output_notebook>")
-        sys.exit(1)
-    
-    input_file = sys.argv[1]
-    output_file = sys.argv[2]
-
-    reference_dir = "Notebooks/Exercises/"
-    destructive = True
-    skip_missing = False
-
-    for arg in sys.argv[3:]:
-        if arg == "--keep":
-            destructive = False
-        elif arg == "--force":
-            skip_missing = True
-        else:
-            reference_dir = arg
-
-    replace_solutions(
-        input_file,
-        output_file,
-        reference_dir,
-        destructive,
-        skip_missing
-    )
+    main()

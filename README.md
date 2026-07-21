@@ -88,13 +88,26 @@ Open the Jupyter notebooks nestled within the `Notebooks` directory, where each 
 
 ## Developer Workflow
 
-- **Reference directories** live under `Notebooks/Exercises/` (solved example blocks) and `Notebooks/Reset/` (blank learner prompts). Keep both in sync when you touch an exercise.
-- **Generate solved notebooks for testing** with `python replacement.py Notebooks/<Notebook>.ipynb build/<Notebook>_solved.ipynb --keep`. Omitting the third argument defaults to `Notebooks/Exercises/`, so the solved blocks are injected automatically.
-- **Restore the learner view before committing** using the reset prompts: `python replacement.py build/<Notebook>_solved.ipynb Notebooks/<Notebook>.ipynb Notebooks/Reset --keep`. This swaps the solved content back to the blank placeholders.
-- **Refresh the reference blocks** after editing exercises:  
-  `python solutions.py Notebooks/<Notebook>.ipynb Notebooks/Exercises --force` (for solved answers) and  
-  `python solutions.py Notebooks/<Notebook>_blank.ipynb Notebooks/Reset --force` if you adjust the learner prompt itself. The `--force` flag lets the script overwrite its temporary export without manual prompts.
-- **Verify changes** by running `pytest` and, if relevant, rebuilding docs via `python build.py` to ensure notebooks still execute end-to-end.
+The canonical files in `Notebooks/` are always the learner versions. Solved
+blocks live in `Notebooks/Exercises/`; learner/reset blocks live in
+`Notebooks/Reset/`. The tools identify exercises by their named markers inside
+each cell, never by cell number, so notebook cells may be added, deleted, or
+reordered safely.
+
+The usual answer-editing loop is:
+
+```bash
+python replacement.py Notebooks/SingleLens.ipynb build/SingleLens_solved.ipynb
+# Edit only the marked answers in build/SingleLens_solved.ipynb.
+python solutions.py build/SingleLens_solved.ipynb Notebooks/Exercises --force
+git diff -- Notebooks/Exercises
+pytest
+```
+
+`--force` on `solutions.py` deliberately permits overwriting reference files;
+without it, the script refuses. For the full marker format, learner-prompt
+updates, new exercises, validation steps, and the one documented missing-answer
+exception, read [`MAINTAINERS.md`](MAINTAINERS.md).
 
 ## Contributing
 

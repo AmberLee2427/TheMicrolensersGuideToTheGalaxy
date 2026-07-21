@@ -1,202 +1,139 @@
-"""
-Create or refresh solution reference files from a fully solved notebook.
+"""Save marked exercise blocks from a notebook into reference files.
 
-The script walks through the exercise markers in a notebook (either the
-`.ipynb` source or an intermediate `.txt` export), captures each solution
-block, and writes the corresponding fenced content into the files under
-`Notebooks/Exercises`. It honours both code and markdown exercises, and
-supports multipart exercises with alphanumeric part labels (e.g. `PART: 1a`).
+Exercise identity comes from the marker filename, block type, and optional part
+label.  Notebook cell positions are deliberately irrelevant: every code or
+Markdown cell is inspected independently, so cells may be added, removed, or
+reordered without changing this workflow.
 """
 
 from __future__ import annotations
 
 import argparse
 from collections import OrderedDict
+import json
+import os
 from pathlib import Path
-import re
-import sys
-from typing import Dict, List, Tuple
+import tempfile
+from typing import Iterable
 
-import nb4llm
-
-# Matches code exercise blocks, preserving leading indentation and the separator line.
-CODE_PATTERN = re.compile(
-    r"(?P<indent>[ \t]*)######################\n"
-    r"(?P=indent)# EXERCISE: (?P<filename>.*?)(?: PART: (?P<part>[^\n]+))?\n"
-    r"(?P=indent)(?P<separator>#-+[^\n]*)\n"
-    r"(?P<content>.*?)(?:\r?\n)?(?P=indent)######################",
-    re.DOTALL,
+from exercise_blocks import (
+    ExerciseBlock,
+    ExerciseBlockError,
+    ExerciseKey,
+    find_exercise_blocks,
+    index_unique_blocks,
+    render_reference_file,
 )
-
-# Matches markdown exercise blocks.
-MD_PATTERN = re.compile(
-    r"<!-- EXERCISE: (?P<filename>.*?)(?: PART: (?P<part>[^\n]+))? -->\n"
-    r"(?P<content>.*?)"
-    r"<!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->",
-    re.DOTALL,
-)
+from replacement import collect_notebook_blocks
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Extract solved exercises from a notebook into reference files."
+        description="Save marked exercises from a notebook into reference files."
     )
-    parser.add_argument("notebook", help="Path to the solved notebook (.ipynb or .txt).")
-    parser.add_argument("output_dir", help="Directory where solution files are written.")
+    parser.add_argument("notebook", help="Solved or learner notebook (.ipynb or .txt).")
+    parser.add_argument("output_dir", help="Directory where reference files are written.")
     parser.add_argument(
         "--force",
         action="store_true",
-        help="Overwrite the temporary txt export if it already exists.",
+        help="Overwrite existing reference files after all markers are validated.",
     )
     return parser.parse_args()
 
 
-def get_text_notebook_path(notebook_path: Path, force: bool) -> Tuple[Path, bool]:
-    """
-    Return a path to a txt representation of the notebook.
+def collect_blocks(path: Path) -> list[ExerciseBlock]:
+    """Read and validate every marked block in a notebook or text export."""
 
-    For `.ipynb` inputs we emit a sibling file named `<stem>.__solutions_tmp__.txt`.
-    When the file already exists the caller can opt into overwriting it with
-    `--force`.
-    """
-    if notebook_path.suffix.lower() == ".ipynb":
-        temp_txt = notebook_path.with_name(f"{notebook_path.stem}.__solutions_tmp__.txt")
-        if temp_txt.exists():
-            if force:
-                temp_txt.unlink()
-            else:
-                raise FileExistsError(
-                    f"Temporary txt notebook {temp_txt} already exists. "
-                    "Re-run with --force to overwrite it."
-                )
-        nb4llm.convert_ipynb_to_txt(str(notebook_path), str(temp_txt))
-        return temp_txt, True
+    if path.suffix.lower() == ".ipynb":
+        notebook = json.loads(path.read_text(encoding="utf-8"))
+        return [item.block for item in collect_notebook_blocks(notebook, str(path))]
 
-    if notebook_path.suffix.lower() == ".txt":
-        return notebook_path, False
+    if path.suffix.lower() == ".txt":
+        blocks = find_exercise_blocks(path.read_text(encoding="utf-8"))
+        index_unique_blocks(blocks, str(path))
+        return blocks
 
-    raise ValueError("Notebook must be a .ipynb or .txt file.")
+    raise ValueError("Notebook must be a .ipynb notebook or .txt export.")
 
 
-def extract_solution_blocks(notebook_text: str) -> "OrderedDict[str, List[Dict[str, str]]]":
-    """
-    Scan the notebook text for exercise blocks and group them by filename.
-    """
-    matches: List[Tuple[int, str, re.Match[str]]] = []
-    matches.extend((m.start(), "code", m) for m in CODE_PATTERN.finditer(notebook_text))
-    matches.extend((m.start(), "markdown", m) for m in MD_PATTERN.finditer(notebook_text))
-    matches.sort(key=lambda item: item[0])
+def group_blocks_by_filename(
+    blocks: Iterable[ExerciseBlock],
+) -> "OrderedDict[str, list[ExerciseBlock]]":
+    """Group blocks in notebook order while retaining their exact markers."""
 
-    solutions: "OrderedDict[str, List[Dict[str, str]]]" = OrderedDict()
-    for _, block_type, match in matches:
-        filename = match.group("filename").strip()
-        part = match.group("part")
-        part = part.strip() if part else None
-
-        if filename not in solutions:
-            solutions[filename] = []
-
-        if block_type == "code":
-            solutions[filename].append(
-                {
-                    "type": "code",
-                    "part": part,
-                    "indent": match.group("indent"),
-                    "separator": match.group("separator"),
-                    "content": match.group("content").rstrip("\r\n"),
-                }
-            )
-        else:
-            solutions[filename].append(
-                {
-                    "type": "markdown",
-                    "part": part,
-                    "content": match.group("content").rstrip("\r\n"),
-                }
-            )
-
-    return solutions
-
-
-def render_solution_file(filename: str, blocks: List[Dict[str, str]]) -> str:
-    """
-    Render the list of blocks for a solution file back to fenced markdown.
-    """
-    rendered_blocks: List[str] = []
-
+    grouped: "OrderedDict[str, list[ExerciseBlock]]" = OrderedDict()
+    seen: set[ExerciseKey] = set()
     for block in blocks:
-        part_suffix = f" PART: {block['part']}" if block.get("part") else ""
-
-        if block["type"] == "code":
-            indent = block["indent"]
-            separator = block["separator"]
-            content = block["content"]
-
-            code_lines = [
-                "```python",
-                f"{indent}######################",
-                f"{indent}# EXERCISE: {filename}{part_suffix}",
-                f"{indent}{separator}",
-            ]
-
-            if content:
-                code_lines.append(content)
-            else:
-                code_lines.append("")
-
-            code_lines.append(f"{indent}######################")
-            code_lines.append("```")
-            rendered_blocks.append("\n".join(code_lines))
-        else:
-            content = block["content"]
-            md_lines = [
-                "```markdown",
-                f"<!-- EXERCISE: {filename}{part_suffix} -->",
-            ]
-            if content:
-                md_lines.append(content)
-            else:
-                md_lines.append("")
-            md_lines.append("<!-- ~~~~~~~~~~~~~~~~~~~~~~~ -->")
-            md_lines.append("```")
-            rendered_blocks.append("\n".join(md_lines))
-
-    return "\n\n".join(rendered_blocks) + "\n"
+        if block.key in seen:
+            raise ExerciseBlockError(
+                f"Duplicate exercise marker {block.key.describe()} while saving."
+            )
+        seen.add(block.key)
+        grouped.setdefault(block.key.filename, []).append(block)
+    return grouped
 
 
-def write_solution_files(
-    output_dir: Path, solutions: "OrderedDict[str, List[Dict[str, str]]]"
-) -> None:
-    for name, blocks in solutions.items():
-        target = output_dir / name
-        target.write_text(render_solution_file(name, blocks), encoding="utf-8")
+def _write_text_atomic(path: Path, text: str) -> None:
+    descriptor, temp_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".tmp", dir=path.parent
+    )
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+            handle.write(text)
+        os.replace(temp_name, path)
+    except Exception:
+        if os.path.exists(temp_name):
+            os.unlink(temp_name)
+        raise
+
+
+def write_reference_files(
+    output_dir: Path,
+    grouped: "OrderedDict[str, list[ExerciseBlock]]",
+    *,
+    force: bool = False,
+) -> list[Path]:
+    """Write validated references, refusing accidental overwrites by default."""
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    targets = [output_dir / filename for filename in grouped]
+    existing = [target for target in targets if target.exists()]
+    if existing and not force:
+        names = "\n  - ".join(str(path) for path in existing)
+        raise FileExistsError(
+            "Refusing to overwrite existing exercise references:\n"
+            f"  - {names}\n"
+            "Review the source notebook, then re-run with --force and inspect the diff."
+        )
+
+    for target, blocks in zip(targets, grouped.values()):
+        _write_text_atomic(target, render_reference_file(blocks))
+    return targets
+
+
+def save_references(
+    notebook: str | Path,
+    output_dir: str | Path,
+    *,
+    force: bool = False,
+) -> list[Path]:
+    """Public API for validating and saving notebook exercise references."""
+
+    notebook_path = Path(notebook)
+    destination = Path(output_dir)
+    if not notebook_path.exists():
+        raise FileNotFoundError(f"Notebook {notebook_path} does not exist.")
+
+    grouped = group_blocks_by_filename(collect_blocks(notebook_path))
+    if not grouped:
+        raise ExerciseBlockError(f"No exercise markers found in {notebook_path}.")
+    return write_reference_files(destination, grouped, force=force)
 
 
 def main() -> None:
     args = parse_args()
-    notebook_path = Path(args.notebook).resolve()
-    output_dir = Path(args.output_dir).resolve()
-
-    if not notebook_path.exists():
-        raise FileNotFoundError(f"Notebook {notebook_path} does not exist.")
-
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    txt_path, cleanup = get_text_notebook_path(notebook_path, args.force)
-
-    try:
-        notebook_text = txt_path.read_text(encoding="utf-8")
-        solutions = extract_solution_blocks(notebook_text)
-
-        if not solutions:
-            print("No exercise markers found; no files were written.", file=sys.stderr)
-            return
-
-        write_solution_files(output_dir, solutions)
-        print(f"Wrote {len(solutions)} solution file(s) to {output_dir}.")
-    finally:
-        if cleanup and txt_path.exists():
-            txt_path.unlink()
+    written = save_references(args.notebook, args.output_dir, force=args.force)
+    print(f"Wrote {len(written)} reference file(s) to {Path(args.output_dir)}.")
 
 
 if __name__ == "__main__":
