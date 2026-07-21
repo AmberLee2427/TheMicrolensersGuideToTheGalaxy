@@ -131,7 +131,7 @@ Malpas, A., Kruszynska, K., Crisp, A., Murlidhar, A., & Johnson, S. (2025). The 
 
 ## Contact
 
-Should questions or inquiries cross your mind or terminal, feel free to reach out to the project author, who is as approachable as a friendly as wait staff at the restaurant at the end of the Universe:
+Should questions or inquiries cross your mind or terminal, feel free to reach out to the project author, who is as approachable and friendly as wait staff at the restaurant at the end of the Universe:
 
 - **Name:** Amber Malpas
 - **Email:** malpas.1@osu.edu
